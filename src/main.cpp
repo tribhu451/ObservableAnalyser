@@ -35,7 +35,16 @@ int main(){
     exit(1); }
 
 
-  observables* OBJ = new observables();
+  observables* OBJ = new observables(iparams,RIF);
+  OBJ->calculate_dnchdeta_eta(0.01,3);
+  OBJ->calculate_dndy_y(0.01,3);
+  OBJ->calculate_invariant_yield_vs_pt(0, -0.5, 0.5);
+  OBJ->calculate_invariant_yield_vs_pt(1, -0.5, 0.5);
+  OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.1, 3 );
+  OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.1, 3 );
+  OBJ->calculate_v2_pt( 0, -0.5, 0.5 );
+  OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
+  /*
   for(int ii=0; ii<nEvents; ii++){
     OBJ->fill_histogram_of_dnchdeta_eta(RIF->get_event(ii), 0.01, 3.0 );
     OBJ->fill_histogram_of_v2_pt(RIF->get_event(ii), -0.5, 0.5);
@@ -49,7 +58,7 @@ int main(){
    OBJ->calculate_v1_eta();
    OBJ->calculate_v1_y();
    OBJ->calculate_invariant_yield_pt(nEvents, -0.5, 0.5) ;
-
+   */
 
   return 0;
 }

@@ -5,47 +5,23 @@
 #include "TProfile.h"
 #include "TMath.h"
 #include "events.h"
-
-
-#define _N_HISTOGRAMS_DNCHDETA_ETA 7
-#define _N_HISTOGRAMS_V2_PT 5
-#define _N_HISTOGRAMS_V1_Y 7
-#define _N_HISTOGRAMS_V1_ETA 1
-#define _N_HISTOGRAMS_SPECTRA 6
+#include "read_input_file.h"
+#include "inparams.h"
 
 class observables{
 
   public :
-  observables();
-  ~observables();
-  void fill_histogram_of_dnchdeta_eta(events* , double, double);
-  void calculate_dnchdeta_eta(int );
-  void fill_histogram_of_v2_pt(events* , double , double );
-  void calculate_v2_pt();
-  void calculate_v1_eta();
-  void fill_histogram_of_v1_eta(events* Event, double pT_min, double pT_max );
-  void calculate_v1_y();
-  void fill_histogram_of_v1_y(events* Event, double pT_min, double pT_max );
-  void fill_histogram_of_invariant_yield_pt(events* Event, double eta_min, double eta_max ) ;
-  void calculate_invariant_yield_pt(int Nevents, double eta_min, double eta_max);
+
+    observables(input_paramters &iparam_, read_input_file* );
+    void calculate_dnchdeta_eta(double pT_min, double pT_max);
+    void calculate_dndy_y( double pT_min, double pT_max);
+    void calculate_invariant_yield_vs_pt( int yflag, double Rap_min, double Rap_max );
+    void calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_min, double pT_max );
+    void calculate_v2_pt( int yflag, double Rap_min, double Rap_max );
 
   private :
-   
-   float eta_min ;
-   float eta_max ;
-   int   eta_bins ;
-   TH1D*       H1D_DNCHDETA_ETA[_N_HISTOGRAMS_DNCHDETA_ETA] ; 
-   TProfile*   PROFILE_V2_PT[_N_HISTOGRAMS_V2_PT] ; 
-   TProfile*   PROFILE_V1_Y[_N_HISTOGRAMS_V1_Y] ; 
-   TProfile*   PROFILE_V1_ETA[_N_HISTOGRAMS_V1_ETA] ; 
-   TH1D*       H1D_INVYLD_PT[_N_HISTOGRAMS_SPECTRA] ; 
 
-   float pT_min   ; 
-   float pT_max   ; 
-   int   pT_bins  ; 
-
-   float y_min ;
-   float y_max ;
-   int   y_bins ;
+    input_paramters &iparam ; 
+    read_input_file* rif ;    
 
 };
