@@ -19,7 +19,7 @@ objdir     = obj
 
 SRC        = main.cpp events.cpp read_input_file.cpp particles.cpp observables.cpp\
              decay_channel.cpp decay_table.cpp  pdg_properties.cpp  read_pdg.cpp\
-             reso_decays.cpp
+             reso_decays.cpp inparams.cpp
                 
              
 OBJS       = $(patsubst %.cpp,$(objdir)/%.o,$(SRC)) 

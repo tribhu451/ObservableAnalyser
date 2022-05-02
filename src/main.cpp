@@ -12,15 +12,17 @@
 int main(){
 
 
-  input_paramters iparams ; 
-  int nEvents = iparams.nEvents ; 
+  input_paramters iparams ;
+  read_parameters* r = new read_parameters();
+  r->read_parameters_from_file(iparams, "input_parameters"); 
 
   read_pdg* RPDG = new read_pdg(iparams); 
   RPDG->read_and_store_particle_properties_with_decay_channels("PDG/pdg-urqmd_v3.3+_weak.dat");
-  
-  reso_decays* RD = new reso_decays(RPDG);
 
+  reso_decays* RD = new reso_decays(RPDG);
   read_input_file* RIF = new read_input_file(iparams, RD);
+
+  int nEvents = iparams.nEvents ; 
   
   if(iparams.input_read_mode == 0 ){
     RIF->read_input_file_iSS_OSCAR(nEvents); }
