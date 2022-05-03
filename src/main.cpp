@@ -44,21 +44,7 @@ int main(){
   OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.1, 3 );
   OBJ->calculate_v2_pt( 0, -0.5, 0.5 );
   OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
-  /*
-  for(int ii=0; ii<nEvents; ii++){
-    OBJ->fill_histogram_of_dnchdeta_eta(RIF->get_event(ii), 0.01, 3.0 );
-    OBJ->fill_histogram_of_v2_pt(RIF->get_event(ii), -0.5, 0.5);
-    OBJ->fill_histogram_of_v1_y(RIF->get_event(ii), 0.01, 3.0 );
-    OBJ->fill_histogram_of_v1_eta(RIF->get_event(ii), 0.01, 3.0 );
-    OBJ->fill_histogram_of_invariant_yield_pt(RIF->get_event(ii), -0.5 ,0.5) ;
-  }
 
-   OBJ->calculate_dnchdeta_eta(nEvents);
-   OBJ->calculate_v2_pt();
-   OBJ->calculate_v1_eta();
-   OBJ->calculate_v1_y();
-   OBJ->calculate_invariant_yield_pt(nEvents, -0.5, 0.5) ;
-   */
 
   return 0;
 }

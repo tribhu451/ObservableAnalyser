@@ -436,7 +436,7 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
      output_filename << "_pT_" << pT_min << "_" << pT_max ;
    }
   else{
-     output_filename << "results/v1_y-" << hadron_name[ix];
+     output_filename << "results/v1_eta-" << hadron_name[ix];
      output_filename << "_pT_" << pT_min << "_" << pT_max ;
   }
    output_filename << ".dat";
