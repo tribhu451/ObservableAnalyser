@@ -16,7 +16,7 @@ using std::istringstream ;
 class read_input_file{
   public :
 
-    read_input_file(input_paramters &iparam_, reso_decays*) ;
+    read_input_file(input_paramters &iparam_, reso_decays*, std::string path_for_input_file_to_be_read__ , int num_of_file_sets_to_be_read__ ) ;
     ~read_input_file();
     void read_input_file_iSS_OSCAR(int );
     void read_particle_list_dat_from_urqmd(int );
@@ -36,7 +36,11 @@ class read_input_file{
     reso_decays* resonance_decays ; 
     char buff[400];
     std::vector<events> event_vector ;
-    int get_PID_from_urqmd_MCID(int mcid, int iso) ; 
+    int get_PID_from_urqmd_MCID(int mcid, int iso) ;
+    
+    std::string path_for_input_file_to_be_read ;
+    int num_of_file_sets_to_be_read ; 
+ 
 
 
 };

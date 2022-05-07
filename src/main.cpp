@@ -9,7 +9,12 @@
 #include "inparams.h"
 
 
-int main(){
+int main(int argc, char **argv){
+
+  if(argc != 3){
+    std::cout << "2 arguments required ..." << std::endl ;
+    exit(1); 
+  }
 
 
   input_paramters iparams ;
@@ -20,7 +25,7 @@ int main(){
   RPDG->read_and_store_particle_properties_with_decay_channels("PDG/pdg-urqmd_v3.3+_weak.dat");
 
   reso_decays* RD = new reso_decays(RPDG);
-  read_input_file* RIF = new read_input_file(iparams, RD);
+  read_input_file* RIF = new read_input_file(iparams, RD, argv[1], atof(argv[2]) );
 
   int nEvents = iparams.nEvents ; 
   

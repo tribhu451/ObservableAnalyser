@@ -1,7 +1,12 @@
 #include "read_input_file.h"
 
-read_input_file::read_input_file(input_paramters &iparam_, reso_decays* reso_decays_) : 
+read_input_file::read_input_file(input_paramters &iparam_, reso_decays* reso_decays_,
+  std::string path_for_input_file_to_be_read__, int num_of_file_sets_to_be_read__) : 
 iparam(iparam_), resonance_decays(reso_decays_){
+
+path_for_input_file_to_be_read = path_for_input_file_to_be_read__ ;
+num_of_file_sets_to_be_read = num_of_file_sets_to_be_read__ ;
+
 }
 
 read_input_file::~read_input_file(){
@@ -138,12 +143,25 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
   int temp_iso ; 
 
   std::ifstream file;
-  file.open("particle_list.bin",std::ios::binary | std::ios::in);
-  if(!file){
-    std::cout << "file not found." 
-                << std::endl;
-    exit(1);
-  }
+
+  for(int input_file_index=0; input_file_index < num_of_file_sets_to_be_read ; input_file_index++ ){
+
+   std::stringstream input_filename1;
+   input_filename1.str(std::string());
+   input_filename1 << path_for_input_file_to_be_read.c_str() ;
+   input_filename1 << "/particle_list_set_";
+   input_filename1 << input_file_index ;
+   input_filename1 << ".bin";
+
+   file.open(input_filename1.str().c_str(),std::ios::binary | std::ios::in);
+   if(!file){
+     std::cout << "file not found." 
+                 << std::endl;
+     exit(1);
+   }
+
+
+  std::cout << "reading file : " << input_filename1.str().c_str() << " ... " << std::endl ; 
 
   int ii=0 ; 
    while (ii < TotalEvents){
@@ -185,6 +203,9 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
   }
 
   file.close() ;
+ } // input_file_index loop
+
+
  
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<seconds>(stop - start);
