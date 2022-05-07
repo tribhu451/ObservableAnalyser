@@ -13,8 +13,8 @@ void reso_decays::perform_decays(events* Event){
   auto start = high_resolution_clock::now();
 
   int Nparticles = Event->get_multiplicity_of_the_event();
-  std::cout << "Multiplicity of the event : " << 
-                 Nparticles << " ... " << std::endl ;   
+  //std::cout << "Multiplicity of the event : " << 
+  //               Nparticles << " ... " << std::endl ;   
 
   std::list<particles> temp_part_vect ; 
   std::list<particles> resonance_list ; // a temporary list of resonances
@@ -47,9 +47,9 @@ void reso_decays::perform_decays(events* Event){
   temp_part_vect.clear() ; 
 
 
-  std::cout << "No. of stable particles : " << Event->get_multiplicity_of_the_event() << " ..." << std::endl ; 
-  std::cout << "No. of decayble particles : " << resonance_list.size() << " ..." << std::endl ;
-  std::cout << "Performing decays ... " << std::endl ;  
+  //std::cout << "No. of stable particles : " << Event->get_multiplicity_of_the_event() << " ..." << std::endl ; 
+  //std::cout << "No. of decayble particles : " << resonance_list.size() << " ..." << std::endl ;
+  //std::cout << "Performing decays ... " << std::endl ;  
 
 
   /*
@@ -220,15 +220,15 @@ void reso_decays::perform_decays(events* Event){
     
   } // while resonance list size > 0 
   
-  std::cout << "No. of stable particles : " << Event->get_multiplicity_of_the_event() << " ..." << std::endl ; 
-  std::cout << "No. of decayble particles : " << resonance_list.size() << " ..." << std::endl ;
+  //std::cout << "No. of stable particles : " << Event->get_multiplicity_of_the_event() << " ..." << std::endl ; 
+  //std::cout << "No. of decayble particles : " << resonance_list.size() << " ..." << std::endl ;
   resonance_list.clear() ; 
   
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<seconds>(stop - start);
-  std::cout << "Resonance decays of the current event finished in " << duration.count() 
-	    << " sec.  ... "  << std::endl;
-  std::cout << "=============================================================" << std::endl ; 
+  //std::cout << "Resonance decays of the current event finished in " << duration.count() 
+  //	    << " sec.  ... "  << std::endl;
+  //std::cout << "=============================================================" << std::endl ; 
   
   
 }

@@ -23,7 +23,7 @@ void observables::calculate_dnchdeta_eta( double pT_min, double pT_max ){
   H1D_DNCHDETA_ETA[7] = (TH1D*) H1D_DNCHDETA_ETA[0]->Clone("H7");  H1D_DNCHDETA_ETA[7]->SetTitle("lambda");
   H1D_DNCHDETA_ETA[8] = (TH1D*) H1D_DNCHDETA_ETA[0]->Clone("H8");  H1D_DNCHDETA_ETA[8]->SetTitle("anti_lambda");
 
-  int nEvents = iparam.nEvents ; 
+  int nEvents = rif->get_event_buffer_size() ; 
   for(int ii=0; ii<nEvents; ii++){
     events* Event = rif->get_event(ii) ; 
     int nParticles = Event->get_multiplicity_of_the_event();
@@ -129,7 +129,7 @@ void observables::calculate_dndy_y( double pT_min, double pT_max ){
   H1D_DNDY_Y[7] = (TH1D*) H1D_DNDY_Y[0]->Clone("YH7");  H1D_DNDY_Y[7]->SetTitle("lambda");
   H1D_DNDY_Y[8] = (TH1D*) H1D_DNDY_Y[0]->Clone("YH8");  H1D_DNDY_Y[8]->SetTitle("anti_lambda");
 
-  int nEvents = iparam.nEvents ; 
+  int nEvents = rif->get_event_buffer_size() ; 
   for(int ii=0; ii<nEvents; ii++){
     events* Event = rif->get_event(ii) ; 
     int nParticles = Event->get_multiplicity_of_the_event();
@@ -236,7 +236,7 @@ void observables::calculate_invariant_yield_vs_pt( int yflag, double Rap_min, do
   H1D_INVYLD_PT[7] = (TH1D*) H1D_INVYLD_PT[0]->Clone("PT7");  H1D_INVYLD_PT[7]->SetTitle("anti_Lambda");
 
 
-  int nEvents = iparam.nEvents ; 
+  int nEvents = rif->get_event_buffer_size() ; 
   for(int ii=0; ii<nEvents; ii++){
     events* Event = rif->get_event(ii) ; 
     int nParticles = Event->get_multiplicity_of_the_event();
@@ -354,7 +354,7 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
    PROFILE_V1_Y[7] = (TProfile*) PROFILE_V1_Y[0]->Clone("PV7");  PROFILE_V1_Y[7]->SetTitle("lambda");
    PROFILE_V1_Y[8] = (TProfile*) PROFILE_V1_Y[0]->Clone("PV8");  PROFILE_V1_Y[8]->SetTitle("anti_lambda");
 
-  int nEvents = iparam.nEvents ; 
+  int nEvents = rif->get_event_buffer_size() ; 
   for(int ii=0; ii<nEvents; ii++){
     events* Event = rif->get_event(ii) ; 
     int nParticles = Event->get_multiplicity_of_the_event();
@@ -474,7 +474,7 @@ void observables::calculate_v2_pt( int yflag, double Rap_min, double Rap_max ){
   PROFILE_V2_PT[7] = (TProfile*) PROFILE_V2_PT[0]->Clone("V2PT6");  PROFILE_V2_PT[7]->SetTitle("Lambda");
   PROFILE_V2_PT[8] = (TProfile*) PROFILE_V2_PT[0]->Clone("V2PT7");  PROFILE_V2_PT[8]->SetTitle("anti_Lambda");
 
-  int nEvents = iparam.nEvents ; 
+  int nEvents = rif->get_event_buffer_size() ; 
   for(int ii=0; ii<nEvents; ii++){
     events* Event = rif->get_event(ii) ; 
     int nParticles = Event->get_multiplicity_of_the_event();

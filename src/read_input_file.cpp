@@ -126,6 +126,8 @@ void read_input_file::read_particle_list_dat_from_urqmd(int TotalEvents){
 
 void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
 
+  auto start = high_resolution_clock::now();
+
   std::cout << "reading particle_list.bin of urqmd ..." 
               << std::endl ; 
  
@@ -143,12 +145,14 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
     exit(1);
   }
 
-  for(int ii=0; ii<TotalEvents; ii++){
-
+  int ii=0 ; 
+   while (ii < TotalEvents){
     file.read(reinterpret_cast<char *>(&nch), sizeof(int));
      if (file.eof()) break;
 
+    if( (ii%500) == 0 ){
     std::cout << ii << "\t" << nch << std::endl ;
+    }
 
     events* Event = new events();
  
@@ -177,14 +181,31 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
     } // particle loop
 
     event_vector.push_back(*Event);
+    ii++ ; 
   }
 
-  file.close() ; 
+  file.close() ;
+ 
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<seconds>(stop - start);
+  std::cout << "UrQMD binary file reading finished in " << duration.count() 
+  	    << " sec.  ... "  << std::endl;
+
 
   if( iparam.include_weak_decay > 0 ){
-    for(int ii=0; ii<TotalEvents; ii++){
-       resonance_decays->perform_decays(get_event(ii)) ; 
+
+    start = high_resolution_clock::now();
+    std::cout << "Decaying resonances ... " << std::endl ; 
+
+    for(int ievents=0; ievents<get_event_buffer_size(); ievents++){
+       resonance_decays->perform_decays(get_event(ievents)) ; 
      }
+
+    stop = high_resolution_clock::now();
+    duration = duration_cast<seconds>(stop - start);
+    std::cout << "Resonances decay finished in " << duration.count() 
+  	    << " sec.  ... "  << std::endl;
+
   }
   
 }

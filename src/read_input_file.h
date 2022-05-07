@@ -7,6 +7,10 @@
 #include <string>
 #include "inparams.h"
 #include "reso_decays.h"
+#include <chrono>
+
+using namespace std::chrono;
+
 
 using std::istringstream ; 
 class read_input_file{
@@ -20,6 +24,10 @@ class read_input_file{
 
     events* get_event(int xx){
       return &event_vector[xx] ; 
+    }
+
+    inline int get_event_buffer_size(){
+       return event_vector.size() ; 
     }
 
   private :
