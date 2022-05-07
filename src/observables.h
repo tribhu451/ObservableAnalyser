@@ -19,9 +19,11 @@ class observables{
     void calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_min, double pT_max );
     void calculate_v2_pt( int yflag, double Rap_min, double Rap_max );
 
+
   private :
 
     input_paramters &iparam ; 
-    read_input_file* rif ;    
+    read_input_file* rif ;
+    double fit_a_straight_line_and_get_slope(int n, double *x, double *y) ;     
 
 };

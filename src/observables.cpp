@@ -340,7 +340,7 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
 
    double Y_min   = -8. ; 
    double Y_max   =  8. ; 
-   int    Y_bins  =  48 ; 
+   int    Y_bins  =  47 ; 
  
    const int   _N_HISTOGRAMS_V1_Y_ = 9 ; 
    TProfile*   PROFILE_V1_Y[_N_HISTOGRAMS_V1_Y_] ; 
@@ -428,6 +428,8 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
   int        hadron_index[_N_HISTOGRAMS_V1_Y_] = {  0,     1 ,     2 ,    3 ,     4 ,     5 ,      6 ,     7 ,      8   };
 
 
+
+
  for(int ix =0; ix < _N_HISTOGRAMS_V1_Y_; ix++){
    output_filename.str("");
 
@@ -448,6 +450,52 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
    }
    mFile.close();
  }
+
+
+ // Slope calculation //
+ for(int ix =0; ix < _N_HISTOGRAMS_V1_Y_; ix++){
+   output_filename.str("");
+
+   if(yflag > 0 ){
+     output_filename << "results/v1_y-" << hadron_name[ix];
+     output_filename << "_pT_" << pT_min << "_" << pT_max ;
+   }
+  else{
+     output_filename << "results/v1_eta-" << hadron_name[ix];
+     output_filename << "_pT_" << pT_min << "_" << pT_max ;
+  }
+   output_filename << "_slope.dat";
+
+   double xx_val[20] ;
+   double yy_val[20] ;
+   double xx_err[20] ;
+   double yy_err[20] ;
+   for(int id=0; id<20; id++){
+    xx_val[id] = 0. ; 
+    yy_val[id] = 0. ; 
+    xx_err[id] = 0. ; 
+    yy_err[id] = 0. ; 
+   }
+  int npoints = 0 ; 
+
+   for(int i=1; i<= PROFILE_V1_Y[hadron_index[ix]]->GetNbinsX(); i++){
+      if( fabs( PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i) ) > 1.1 )
+        continue ;
+      xx_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i)  ;
+      yy_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) ;
+      xx_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i)  ;
+      yy_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ;
+      npoints += 1 ; 
+   }
+
+   double slope_val = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_val) ;  
+   double slope_err = fit_a_straight_line_and_get_slope(npoints,xx_err,yy_err) ;
+   mFile.open(output_filename.str().c_str(), std::ios::out );  
+   mFile << npoints << "  " << slope_val << "  " << slope_err << endl ; 
+   mFile.close();
+ 
+ }
+ // slope calculation end //
 
    for(int ixx=0; ixx < _N_HISTOGRAMS_V1_Y_ ; ixx++){
       PROFILE_V1_Y[ixx]->Clear(); 
@@ -575,6 +623,25 @@ void observables::calculate_v2_pt( int yflag, double Rap_min, double Rap_max ){
 }
 
 
+
+
+double observables::fit_a_straight_line_and_get_slope(int n, double *x, double *y){
+  double sum_x     = 0. ; 
+  double sum_x_sqr = 0. ;
+  double sum_y     = 0. ; 
+  double sum_xy    = 0. ; 
+
+  for(int i=0; i<n; i++){
+    sum_x += x[i] ;
+    sum_x_sqr += ( x[i] * x[i] ) ; 
+    sum_y += y[i] ;
+    sum_xy += ( x[i] * y[i] ) ;
+  }
+
+  return ( sum_x_sqr * sum_y - sum_x * sum_xy ) / ( n * sum_x_sqr - sum_x * sum_x ) ; 
+
+
+}
 
 
 

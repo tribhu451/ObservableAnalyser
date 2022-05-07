@@ -16,7 +16,6 @@ int main(int argc, char **argv){
     exit(1); 
   }
 
-
   input_paramters iparams ;
   read_parameters* r = new read_parameters();
   r->read_parameters_from_file(iparams, "input_parameters"); 
@@ -37,19 +36,20 @@ int main(int argc, char **argv){
     RIF->read_particle_list_dat_from_urqmd_binary(nEvents); }
   else {
     std::cout << "reading mode not specified. Exiting ..." << std::endl ;  
-    exit(1); }
-
+    exit(1); 
+  }
 
   observables* OBJ = new observables(iparams,RIF);
   OBJ->calculate_dnchdeta_eta(0.01,3);
   OBJ->calculate_dndy_y(0.01,3);
   OBJ->calculate_invariant_yield_vs_pt(0, -0.5, 0.5);
   OBJ->calculate_invariant_yield_vs_pt(1, -0.5, 0.5);
-  OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.1, 3 );
-  OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.1, 3 );
-  OBJ->calculate_v2_pt( 0, -0.5, 0.5 );
+  OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.2, 2 );
+  OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.2, 2 );
+  OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.4, 2 );
+  OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.4, 2 );
+  OBJ->calculate_v2_pt( 0, -1.0, 1.0 );
   OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
-
 
   return 0;
 }
