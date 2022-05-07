@@ -468,30 +468,43 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
 
    double xx_val[20] ;
    double yy_val[20] ;
-   double xx_err[20] ;
-   double yy_err[20] ;
+   double yy_up_err[20] ;
+   double yy_low_err[20] ;
    for(int id=0; id<20; id++){
     xx_val[id] = 0. ; 
     yy_val[id] = 0. ; 
-    xx_err[id] = 0. ; 
-    yy_err[id] = 0. ; 
+    yy_up_err[id] = 0. ; 
+    yy_low_err[id] = 0. ; 
    }
   int npoints = 0 ; 
 
    for(int i=1; i<= PROFILE_V1_Y[hadron_index[ix]]->GetNbinsX(); i++){
       if( fabs( PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i) ) > 1.1 )
         continue ;
-      xx_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i)  ;
-      yy_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) ;
-      xx_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i)  ;
-      yy_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ;
+      xx_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i)    ;
+      yy_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i)   ;
+      if( PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) > 0 ){
+        yy_up_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) + 
+                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
+        yy_low_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) - 
+                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
+      }
+      else{
+        yy_up_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) - 
+                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
+        yy_low_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) + 
+                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
+      }
+
       npoints += 1 ; 
    }
 
    double slope_val = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_val) ;  
-   double slope_err = fit_a_straight_line_and_get_slope(npoints,xx_err,yy_err) ;
+   double slope_up_err = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_up_err) ;
+   double slope_low_err = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_low_err) ;
    mFile.open(output_filename.str().c_str(), std::ios::out );  
-   mFile << npoints << "  " << slope_val << "  " << slope_err << endl ; 
+   mFile << npoints << "  " << slope_val << "  " << (slope_up_err - slope_val) << "  " << ( slope_val - slope_low_err ) << endl ;
+           // Actual slope Error = Slope found from  points with ( value + error ) - (value)
    mFile.close();
  
  }
@@ -638,7 +651,7 @@ double observables::fit_a_straight_line_and_get_slope(int n, double *x, double *
     sum_xy += ( x[i] * y[i] ) ;
   }
 
-  return ( sum_x_sqr * sum_y - sum_x * sum_xy ) / ( n * sum_x_sqr - sum_x * sum_x ) ; 
+  return ( n * sum_xy - sum_x * sum_y ) / ( n * sum_x_sqr - sum_x * sum_x ) ;
 
 
 }
