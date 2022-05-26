@@ -519,6 +519,132 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
 
 
 
+
+
+void observables::calculate_v2_vs_y_or_eta(int yflag, double psi2,  double pT_min, double pT_max ){
+
+   double Y_min   = -8. ; 
+   double Y_max   =  8. ; 
+   int    Y_bins  =  81 ; 
+ 
+   const int   _N_HISTOGRAMS_V2_Y_ = 9 ; 
+   TProfile*   PROFILE_V2_Y[_N_HISTOGRAMS_V2_Y_] ; 
+   PROFILE_V2_Y[0] = new TProfile("PV0", "v2_y_charged_particle", Y_bins, Y_min, Y_max);
+   PROFILE_V2_Y[1] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV1");  PROFILE_V2_Y[1]->SetTitle("pion_plus");
+   PROFILE_V2_Y[2] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV2");  PROFILE_V2_Y[2]->SetTitle("pion_minus");
+   PROFILE_V2_Y[3] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV3");  PROFILE_V2_Y[3]->SetTitle("kaon_plus");
+   PROFILE_V2_Y[4] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV4");  PROFILE_V2_Y[4]->SetTitle("kaon_minus");
+   PROFILE_V2_Y[5] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV5");  PROFILE_V2_Y[5]->SetTitle("proton");
+   PROFILE_V2_Y[6] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV6");  PROFILE_V2_Y[6]->SetTitle("anti_proton");
+   PROFILE_V2_Y[7] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV7");  PROFILE_V2_Y[7]->SetTitle("lambda");
+   PROFILE_V2_Y[8] = (TProfile*) PROFILE_V2_Y[0]->Clone("PV8");  PROFILE_V2_Y[8]->SetTitle("anti_lambda");
+
+  int nEvents = rif->get_event_buffer_size() ; 
+  for(int ii=0; ii<nEvents; ii++){
+    events* Event = rif->get_event(ii) ; 
+    int nParticles = Event->get_multiplicity_of_the_event();
+    for(int jj=0; jj<nParticles; jj++){
+      int    PID = Event->get_particle(jj)->get_pid() ; 
+      double Px  = Event->get_particle(jj)->get_px()  ; 
+      double Py  = Event->get_particle(jj)->get_py()  ; 
+      double Pz  = Event->get_particle(jj)->get_pz()  ; 
+      double E   = Event->get_particle(jj)->get_e()   ; 
+      double P = sqrt( Px * Px + Py * Py + Pz * Pz )  ;
+      double Pt = sqrt( Px * Px + Py * Py )  ;
+
+      if(Pt > pT_max || Pt < pT_min)
+        continue ; 
+
+      if( fabs(E-Pz) < 1E-10 )
+        continue ; 
+
+      if( fabs(P-Pz) < 1E-10 )
+        continue ; 
+
+      double Rap ;
+
+
+      if (yflag > 0 )
+        Rap = 0.5 * TMath::Log( ( E + Pz ) / (E - Pz) );
+      else
+        Rap = 0.5 * TMath::Log( ( P + Pz ) / (P - Pz) );
+
+     double v2 = ( Px * Px - Py * Py ) / ( Pt * Pt ) ; 
+
+     if(PID ==  211  || PID == -211  || PID ==  321 || PID == -321  || 
+        PID == 2212  || PID == -2212 || PID == 3122 || PID == -3122 ||
+        PID == 3222  || PID == -3222 || PID == 3112 || PID == -3112 ||
+        PID == 3312  || PID == -3312 || PID == 3334 || PID == -3334  ){
+        PROFILE_V2_Y[0]->Fill(Rap,v2);
+      }
+
+      if(PID == 211){
+        PROFILE_V2_Y[1]->Fill(Rap,v2);
+      }
+      if(PID == -211){
+        PROFILE_V2_Y[2]->Fill(Rap,v2);
+      }
+      if(PID == 321){
+        PROFILE_V2_Y[3]->Fill(Rap,v2);
+      }
+      if(PID == -321){
+        PROFILE_V2_Y[4]->Fill(Rap,v2);
+      }
+      if(PID == 2212){
+        PROFILE_V2_Y[5]->Fill(Rap,v2);
+      }
+      if(PID == -2212){
+        PROFILE_V2_Y[6]->Fill(Rap,v2);
+      }
+      if(PID == 3122){
+        PROFILE_V2_Y[7]->Fill(Rap,v2);
+      }
+      if(PID == -3122){
+        PROFILE_V2_Y[8]->Fill(Rap,v2);
+      }
+
+     } // particle loop
+    } // event loop
+
+  std::ofstream mFile;
+  std::stringstream output_filename;
+
+  std::string hadron_name[_N_HISTOGRAMS_V2_Y_] = {"hpm", "211", "-211", "321", "-321", "2212", "-2212", "3122", "-3122" };
+  int        hadron_index[_N_HISTOGRAMS_V2_Y_] = {  0,     1 ,     2 ,    3 ,     4 ,     5 ,      6 ,     7 ,      8   };
+
+
+
+
+ for(int ix =0; ix < _N_HISTOGRAMS_V2_Y_; ix++){
+   output_filename.str("");
+
+   if(yflag > 0 ){
+     output_filename << "results/v2_y-" << hadron_name[ix];
+     output_filename << "_pT_" << pT_min << "_" << pT_max ;
+   }
+  else{
+     output_filename << "results/v2_eta-" << hadron_name[ix];
+     output_filename << "_pT_" << pT_min << "_" << pT_max ;
+  }
+   output_filename << ".dat";
+
+   mFile.open(output_filename.str().c_str(), std::ios::out );
+   for(int i=1; i<= PROFILE_V2_Y[hadron_index[ix]]->GetNbinsX(); i++){
+       mFile << PROFILE_V2_Y[hadron_index[ix]]->GetBinCenter(i) << "\t" << PROFILE_V2_Y[hadron_index[ix]]->GetBinContent(i) 
+              << "\t" << PROFILE_V2_Y[hadron_index[ix]]->GetBinError(i) << std::endl;
+   }
+   mFile.close();
+ }
+
+   for(int ixx=0; ixx < _N_HISTOGRAMS_V2_Y_ ; ixx++){
+      PROFILE_V2_Y[ixx]->Clear(); 
+   }
+
+
+}
+
+
+
 void observables::calculate_v2_pt( int yflag, double Rap_min, double Rap_max ){
 
   const int _N_HISTOGRAMS_V2_PT = 9 ; 
