@@ -763,6 +763,124 @@ void observables::calculate_v2_pt( int yflag, double Rap_min, double Rap_max ){
 
 
 
+void observables::calculate_v1_pt( int yflag, double Rap_min, double Rap_max ){
+
+  const int _N_HISTOGRAMS_V1_PT = 9 ; 
+  double v1_pt_bins[13] = {0.01, 0.1, 0.15, 0.3, 0.5, 0.75,1.0, 1.25, 1.5 , 1.75, 2.1, 2.5, 3.0} ; 
+
+  TProfile*                 PROFILE_V1_PT[_N_HISTOGRAMS_V1_PT] ; 
+  PROFILE_V1_PT[0] = new TProfile("V2PT0", "pion_pT_differential_v2", 12, v1_pt_bins);
+  PROFILE_V1_PT[1] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT0");  PROFILE_V1_PT[1]->SetTitle("pion_plus");
+  PROFILE_V1_PT[2] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT1");  PROFILE_V1_PT[2]->SetTitle("pion_minus");
+  PROFILE_V1_PT[3] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT2");  PROFILE_V1_PT[3]->SetTitle("kaon_plus");
+  PROFILE_V1_PT[4] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT3");  PROFILE_V1_PT[4]->SetTitle("kaon_minus");
+  PROFILE_V1_PT[5] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT4");  PROFILE_V1_PT[5]->SetTitle("proton");
+  PROFILE_V1_PT[6] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT5");  PROFILE_V1_PT[6]->SetTitle("anti_proton");
+  PROFILE_V1_PT[7] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT6");  PROFILE_V1_PT[7]->SetTitle("Lambda");
+  PROFILE_V1_PT[8] = (TProfile*) PROFILE_V1_PT[0]->Clone("V2PT7");  PROFILE_V1_PT[8]->SetTitle("anti_Lambda");
+
+  int nEvents = rif->get_event_buffer_size() ; 
+  for(int ii=0; ii<nEvents; ii++){
+    events* Event = rif->get_event(ii) ; 
+    int nParticles = Event->get_multiplicity_of_the_event();
+    for(int jj=0; jj<nParticles; jj++){
+      int    PID = Event->get_particle(jj)->get_pid() ; 
+      double Px  = Event->get_particle(jj)->get_px()  ; 
+      double Py  = Event->get_particle(jj)->get_py()  ; 
+      double Pz  = Event->get_particle(jj)->get_pz()  ; 
+      double E   = Event->get_particle(jj)->get_e()   ; 
+      double P = sqrt( Px * Px + Py * Py + Pz * Pz )  ;
+      double Rap ; 
+
+      if( fabs(E-Pz) < 1E-10 )
+        continue ; 
+
+      if( fabs(P-Pz) < 1E-10 )
+        continue ; 
+
+
+      if (yflag > 0 )
+        Rap = 0.5 * TMath::Log( ( E + Pz ) / (E - Pz) );
+      else
+        Rap = 0.5 * TMath::Log( ( P + Pz ) / (P - Pz) );
+
+      double Pt = sqrt( Px * Px + Py * Py )  ;
+      if(Rap > Rap_max || Rap < Rap_min)
+        continue ; 
+      double v1 = Px / Pt ; ;
+
+     if(PID ==  211  || PID == -211  || PID ==  321 || PID == -321  || 
+        PID == 2212  || PID == -2212 || PID == 3122 || PID == -3122 ||
+        PID == 3222  || PID == -3222 || PID == 3112 || PID == -3112 ||
+        PID == 3312  || PID == -3312 || PID == 3334 || PID == -3334  ){
+        PROFILE_V1_PT[0]->Fill(Pt,v1);
+      }
+
+      if(PID == 211){
+        PROFILE_V1_PT[1]->Fill(Pt,v1);
+      }
+      if(PID == -211){
+        PROFILE_V1_PT[2]->Fill(Pt,v1);
+      }
+      if(PID == 321){
+        PROFILE_V1_PT[3]->Fill(Pt,v1);
+      }
+      if(PID == -321){
+        PROFILE_V1_PT[4]->Fill(Pt,v1);
+      }
+      if(PID == 2212){
+        PROFILE_V1_PT[5]->Fill(Pt,v1);
+      }
+      if(PID == -2212){
+        PROFILE_V1_PT[6]->Fill(Pt,v1);
+      }
+      if(PID == 3122){
+        PROFILE_V1_PT[7]->Fill(Pt,v1);
+      }
+      if(PID == -3122){
+        PROFILE_V1_PT[8]->Fill(Pt,v1);
+      }
+     } // particle loop
+    } // event loop
+
+
+  std::ofstream mFile;
+  std::stringstream output_filename;
+
+  std::string hadron_name[_N_HISTOGRAMS_V1_PT] = {"hpm", "211", "-211", "321", "-321", "2212", "-2212", "3122", "-3122" };
+  int        hadron_index[_N_HISTOGRAMS_V1_PT] = {  0,     1 ,     2 ,    3 ,     4 ,     5 ,      6 ,     7 ,      8   };
+
+
+ for(int ix =0; ix < _N_HISTOGRAMS_V1_PT; ix++){
+   output_filename.str("");
+
+   if(yflag > 0 ){
+     output_filename << "results/v1_pt-" << hadron_name[ix];
+     output_filename << "_y_" << Rap_min << "_" << Rap_max ;
+   }
+  else{
+     output_filename << "results/v1_pt-" << hadron_name[ix];
+     output_filename << "_eta_" << Rap_min << "_" << Rap_max ;
+  }
+   output_filename << ".dat";
+
+   mFile.open(output_filename.str().c_str(), std::ios::out );
+   for(int i=1; i<= PROFILE_V1_PT[hadron_index[ix]]->GetNbinsX(); i++){
+       mFile << PROFILE_V1_PT[hadron_index[ix]]->GetBinCenter(i) << "\t" << PROFILE_V1_PT[hadron_index[ix]]->GetBinContent(i) 
+              << "\t" << PROFILE_V1_PT[hadron_index[ix]]->GetBinError(i) << std::endl;
+   }
+   mFile.close();
+ }
+
+   for(int ixx=0; ixx < _N_HISTOGRAMS_V1_PT ; ixx++){
+     PROFILE_V1_PT[ixx]->Clear(); 
+   }
+
+
+}
+
+
+
 
 double observables::fit_a_straight_line_and_get_slope(int n, double *x, double *y){
   double sum_x     = 0. ; 

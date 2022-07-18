@@ -19,6 +19,7 @@ class observables{
     void calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_min, double pT_max );
     void calculate_v2_vs_y_or_eta(int yflag, double psi1,  double pT_min, double pT_max );
     void calculate_v2_pt( int yflag, double Rap_min, double Rap_max );
+    void calculate_v1_pt( int yflag, double Rap_min, double Rap_max );
 
 
   private :
