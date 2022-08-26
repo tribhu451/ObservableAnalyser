@@ -12,18 +12,16 @@ class events{
     void add_particle(particles* part) ; 
 
     particles* get_particle(int xx){
-      return &particle_vector[xx] ; 
+      return particle_vector[xx] ; 
     }
   
    inline int get_multiplicity_of_the_event(){
      return particle_vector.size() ;
    }
 
-   inline void clear_particle_vector(){
-    particle_vector.clear() ; 
-   }
+   void clear_particle_vector();
 
   private :
-    std::vector<particles> particle_vector ;
+    std::vector<particles*> particle_vector ;
 
 };

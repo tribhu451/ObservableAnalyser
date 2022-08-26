@@ -18,9 +18,17 @@ void events::add_particle(int pid, double t, double x, double y, double z, doubl
   part->set_x(x);
   part->set_y(y);
   part->set_z(z);
-  particle_vector.push_back(*part);
+  particle_vector.push_back(part);
 }
 
 void events::add_particle(particles* part){
-  particle_vector.push_back(*part);
+  particle_vector.push_back(part);
+}
+
+
+void events::clear_particle_vector(){
+  for (auto p : particle_vector){
+      delete p;
+  }
+  particle_vector.clear() ; 
 }
