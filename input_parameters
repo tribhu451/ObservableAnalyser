@@ -4,3 +4,22 @@
 nEvents	1000
 input_read_mode	2
 include_weak_decay 1
+
+
+
+# ===================== #
+# reconstruction Params #
+# ===================== #
+
+reconstruct_phi_flag 0
+reconstruct_kstar0_flag 0
+reconstruct_kstar0_bar_flag 0 
+
+reconst_phi_mass 1.01899999
+reconst_phi_width 0.0001 
+
+reconst_kstar0_mass 0.893
+reconst_kstar0_width 0.0001 
+
+reconst_kstar0_bar_mass 0.893
+reconst_kstar0_bar_width 0.0001 

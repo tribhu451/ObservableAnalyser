@@ -47,9 +47,56 @@ void read_parameters::read_parameters_from_file(input_paramters &iparam, string 
 	iparam.include_weak_decay = atof(param_value);
       }
 
-       
+      if(param_name == "reconstruct_phi_flag"  ){
+	iparam.reconstruct_phi_flag = atof(param_value);
+      }
+
+      if(param_name == "reconstruct_kstar0_flag"  ){
+	iparam.reconstruct_kstar0_flag = atof(param_value);
+      }
+
+      if(param_name == "reconstruct_kstar0_bar_flag"  ){
+	iparam.reconstruct_kstar0_bar_flag = atof(param_value);
+      }
+
+      if(param_name == "reconst_phi_mass"  ){
+	iparam.reconst_phi_mass = atof(param_value);
+      }
+
+      if(param_name == "reconst_phi_width"  ){
+	iparam.reconst_phi_width = atof(param_value);
+      }
+   
+      if(param_name == "reconst_kstar0_mass"  ){
+	iparam.reconst_kstar0_mass = atof(param_value);
+      }
+
+      if(param_name == "reconst_kstar0_width"  ){
+	iparam.reconst_kstar0_width = atof(param_value);
+      }
+
+      if(param_name == "reconst_kstar0_bar_mass"  ){
+	iparam.reconst_kstar0_bar_mass = atof(param_value);
+      }
+
+      if(param_name == "reconst_kstar0_bar_width"  ){
+	iparam.reconst_kstar0_bar_width = atof(param_value);
+      }
+
+
     number++; 
     
     } 
   File0.close();
 }
+
+
+
+
+
+
+
+
+
+
+

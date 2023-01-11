@@ -7,6 +7,7 @@
 #include "inparams.h"
 #include "read_pdg.h"
 #include "inparams.h"
+#include "reconstruction.h"
 
 
 int main(int argc, char **argv){
@@ -28,6 +29,7 @@ int main(int argc, char **argv){
 
   int nEvents = iparams.nEvents ; 
   
+  // reading the input files //
   if(iparams.input_read_mode == 0 ){
     RIF->read_input_file_iSS_OSCAR(nEvents); }
   else if(iparams.input_read_mode == 1 ){
@@ -41,6 +43,29 @@ int main(int argc, char **argv){
     exit(1); 
   }
 
+  // Reconstructing the resonances //
+  reconstruction* REC = new reconstruction(iparams,RIF);
+  if(iparams.reconstruct_phi_flag > 0){
+    std::cout << "reconstructing phi meson" 
+              << " by invariant mass method ..." 
+              << std::endl ; 
+    REC->reconstruct_phi();
+  }
+  if(iparams.reconstruct_kstar0_flag > 0){
+    std::cout << "reconstructing kstar-0 meson" 
+              << " by invariant mass method ..." 
+              << std::endl ; 
+    REC->reconstruct_kstar0();
+  }
+  if(iparams.reconstruct_kstar0_bar_flag > 0){
+    std::cout << "reconstructing kstar-0-bar meson" 
+              << " by invariant mass method ..." 
+              << std::endl ; 
+    REC->reconstruct_kstar0_bar();
+  }
+
+
+  // calculating the observables //
   observables* OBJ = new observables(iparams,RIF);
   OBJ->calculate_dnchdeta_eta(0.01,3);
   OBJ->calculate_dndy_y(0.01,3);
