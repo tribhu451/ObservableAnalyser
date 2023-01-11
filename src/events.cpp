@@ -21,6 +21,23 @@ void events::add_particle(int pid, double t, double x, double y, double z, doubl
   particle_vector.push_back(*part);
 }
 
+void events::add_particle(int pid, double t, double x, double y, double z, double e, double px, double py, double pz, bool recon_flag, double ww){
+  particles* part = new particles();
+  part->set_pid(pid);
+  part->set_px(px);
+  part->set_py(py);
+  part->set_pz(pz);
+  part->set_e(e);
+  part->set_t(t);
+  part->set_x(x);
+  part->set_y(y);
+  part->set_z(z);
+  part->set_reconst_flag(recon_flag);
+  part->set_weight(ww);
+  particle_vector.push_back(*part);
+}
+
+
 void events::add_particle(particles* part){
   particle_vector.push_back(*part);
 }

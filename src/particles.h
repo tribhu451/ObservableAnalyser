@@ -34,6 +34,13 @@ class particles {
    inline void set_z(double xx){
      z = xx ; 
    }
+   inline void set_reconst_flag(bool xx){
+     reconst_flag = xx ; 
+   }
+   inline void set_weight(float xx){
+     weight = xx ; 
+   }
+
 
    inline int get_pid(){
      return PID ; 
@@ -62,6 +69,12 @@ class particles {
    inline double get_z(){
      return z ; 
    }
+   inline bool get_reconst_flag(){
+     return reconst_flag ; 
+   }
+   inline double get_weight(){
+     return weight ; 
+   }
 
 
   private :
@@ -74,5 +87,10 @@ class particles {
    double x   ; 
    double y   ; 
    double z   ; 
-
+   bool  reconst_flag ; 
+   double weight ; 
 };
+
+
+
+

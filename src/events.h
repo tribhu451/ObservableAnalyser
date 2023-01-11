@@ -8,7 +8,13 @@ class events{
   public :
     events();
     ~events();
-    void add_particle(int pid, double t, double x, double y, double z, double e, double px, double py, double pz);
+    void add_particle(int pid, double t, double x, double y,
+                      double z, double e, double px, double py, 
+                      double pz);
+    void add_particle(int pid, double t, double x, double y, 
+                      double z, double e, double px, double py, double pz, 
+                      bool recon_flag, double weight);
+
     void add_particle(particles* part) ; 
 
     particles* get_particle(int xx){
