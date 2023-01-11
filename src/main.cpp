@@ -34,6 +34,8 @@ int main(int argc, char **argv){
     RIF->read_particle_list_dat_from_urqmd(nEvents); }
   else if(iparams.input_read_mode == 2 ){
     RIF->read_particle_list_dat_from_urqmd_binary(nEvents); }
+  else if(iparams.input_read_mode == 3 ){
+    RIF->read_particle_list_dat_from_iSS_binary(nEvents); }
   else {
     std::cout << "reading mode not specified. Exiting ..." << std::endl ;  
     exit(1); 

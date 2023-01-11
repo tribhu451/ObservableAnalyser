@@ -13,56 +13,74 @@ read_input_file::~read_input_file(){
   event_vector.clear() ; 
 }
 
-void read_input_file::read_input_file_iSS_OSCAR(int TotalEvents) {
 
+
+
+void read_input_file::read_input_file_iSS_OSCAR(int TotalEvents) {
+  
   std::cout << "reading OSCAR.DAT from iSS ..." 
-              << std::endl ; 
+	    << std::endl ; 
   std::cout << "The file contains primordial particles info ..."
-              << std::endl ; 
+	    << std::endl ; 
   std::string dummy ;
   int nch ;
   int index, pid ;
   double  x, y, e, px, py, pz, mass, t, z;
-
+  
   std::ifstream file;
-  file.open("OSCAR.DAT");
-  if(!file){
-    std::cout << "file not found." << std::endl;
-    exit(1);
-  }
-
-  file.getline(buff,150) ;
-  file.getline(buff,150) ;
-  file.getline(buff,150) ;
-
-  for(int ii=0; ii<TotalEvents; ii++){
-    file.getline(buff,100);
-    iss = new istringstream(buff);
-    *iss >> dummy >> nch >> dummy >> dummy ;
-    delete iss;
-    std::cout << ii << "\t" << nch << std::endl ;
-    events* Event = new events(); 
-    for(int i=0; i<nch ; i++){
-      file.getline(buff,300);
+  
+  for(int input_file_index=0; input_file_index < num_of_file_sets_to_be_read ; input_file_index++ ){ 
+    std::stringstream input_filename1;
+    input_filename1.str(std::string());
+    input_filename1 << path_for_input_file_to_be_read.c_str() ;
+    input_filename1 << "/FILE";
+    input_filename1 << input_file_index ;
+    input_filename1 << "/iSS/OSCAR.DAT";
+    file.open(input_filename1.str().c_str(),std::ios::binary | std::ios::in);
+    if(!file){
+      std::cout << input_filename1.str().c_str() << " : file not found." 
+		<< std::endl;
+      exit(1);
+    }
+    std::cout << "reading file : " << input_filename1.str().c_str() << " ... " << std::endl ; 
+    
+    file.getline(buff,150) ;
+    file.getline(buff,150) ;
+    file.getline(buff,150) ;
+    
+    int ii=0 ; 
+    while (ii < TotalEvents){
+      file.getline(buff,100);
       iss = new istringstream(buff);
-      *iss >> index >> pid >> px >> py >> pz >> e >> mass >> x >> y >> z >> t ;
+      *iss >> dummy >> nch >> dummy >> dummy ;
       delete iss;
-      // add the particle to the event
-      Event->add_particle(pid, t, x, y, z,e, px, py, pz) ;
-    } // particle loop
-
-    event_vector.push_back(*Event);
-  }
-
+      std::cout << ii << "\t" << nch << std::endl ;
+      if (file.eof()) break;
+        
+      events* Event = new events(); 
+      for(int i=0; i<nch ; i++){
+	file.getline(buff,300);
+	iss = new istringstream(buff);
+	*iss >> index >> pid >> px >> py >> pz >> e >> mass >> x >> y >> z >> t ;
+	delete iss;
+	// add the particle to the event
+	Event->add_particle(pid, t, x, y, z,e, px, py, pz) ;
+      } // particle loop
+      
+      event_vector.push_back(*Event);
+      ii++;
+    }
+    file.close();
+  } // file loop
+  
   if( iparam.include_weak_decay > 0 ){
     for(int ii=0; ii<TotalEvents; ii++){
-       resonance_decays->perform_decays(get_event(ii)) ; 
-     }
+      resonance_decays->perform_decays(get_event(ii)) ; 
+    }
   }
   
-  //std::cout << "Inside read_input_file, vector size : " << event_vector.size() << std::endl ; 
-  //std::cout << "Inside read_input_file, vector size : " << &event_vector[0] << std::endl ; 
 }
+
 
 
 void read_input_file::read_particle_list_dat_from_urqmd(int TotalEvents){
@@ -233,15 +251,106 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
 
 
 
+void read_input_file::read_particle_list_dat_from_iSS_binary(int TotalEvents){
+
+  auto start = high_resolution_clock::now();
+
+  std::cout << "reading particle_list.bin of iSS ..." 
+              << std::endl ; 
+ 
+  std::string dummy ;
+  int nch ;
+  int pid ;
+  double x, y, e, px, py, pz, mass, t, z ;
 
 
+  std::ifstream file;
+
+  for(int input_file_index=0; input_file_index < num_of_file_sets_to_be_read ; input_file_index++ ){
+
+   std::stringstream input_filename1;
+   input_filename1.str(std::string());
+   input_filename1 << path_for_input_file_to_be_read.c_str() ;
+   input_filename1 << "/primordial_particle_list_set_";
+   input_filename1 << input_file_index ;
+   input_filename1 << ".bin";
+
+   file.open(input_filename1.str().c_str(),std::ios::binary | std::ios::in);
+   if(!file){
+     std::cout << "file not found." 
+                 << std::endl;
+     exit(1);
+   }
 
 
+  std::cout << "reading file : " << input_filename1.str().c_str() << " ... " << std::endl ; 
+
+  int ii=0 ; 
+   while (ii < TotalEvents){
+    file.read(reinterpret_cast<char *>(&nch), sizeof(int));
+     if (file.eof()) break;
+
+    if( (ii%500) == 0 ){
+    std::cout << ii << "\t" << nch << std::endl ;
+    }
+
+    events* Event = new events();
+ 
+    for(int i=0; i<nch ; i++){
+
+        float particle_array[10];
+          for (int i = 0; i < 10; i++) {
+              float temp;
+              file.read(reinterpret_cast<char *>(&temp), sizeof(float));
+              particle_array[i] = temp;
+          }
+            mass = particle_array[0] ; 
+            pid = particle_array[1] ; 
+            t = particle_array[2] ; 
+            x = particle_array[3] ; 
+            y = particle_array[4] ; 
+            z = particle_array[5] ; 
+            e = particle_array[6] ; 
+            px = particle_array[7] ; 
+            py = particle_array[8] ; 
+            pz = particle_array[9] ; 
+
+      // add the particle to the event
+      Event->add_particle(pid, t, x, y, z, e, px, py, pz) ;
+    } // particle loop
+
+    event_vector.push_back(*Event);
+    ii++ ; 
+  }
+
+  file.close() ;
+ } // input_file_index loop
 
 
+ 
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<seconds>(stop - start);
+  std::cout << "iSS binary file reading finished in " << duration.count() 
+  	    << " sec.  ... "  << std::endl;
 
 
+  if( iparam.include_weak_decay > 0 ){
 
+    start = high_resolution_clock::now();
+    std::cout << "Decaying resonances ... " << std::endl ; 
+
+    for(int ievents=0; ievents<get_event_buffer_size(); ievents++){
+       resonance_decays->perform_decays(get_event(ievents)) ; 
+     }
+
+    stop = high_resolution_clock::now();
+    duration = duration_cast<seconds>(stop - start);
+    std::cout << "Resonances decay finished in " << duration.count() 
+  	    << " sec.  ... "  << std::endl;
+
+  }
+  
+}
 
 
 
