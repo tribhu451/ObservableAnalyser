@@ -27,6 +27,7 @@ class observables{
 
     input_paramters &iparam ; 
     read_input_file* rif ;
-    double fit_a_straight_line_and_get_slope(int n, double *x, double *y) ;     
+    double fit_a_straight_line_and_get_slope(int n, double *x, double *y) ;
+    double fit_a_cubic_plus_linear_func(int n, double *x, double *y) ;    
 
 };

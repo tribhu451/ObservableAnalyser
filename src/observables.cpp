@@ -396,187 +396,220 @@ void observables::calculate_v1_vs_y_or_eta(int yflag, double psi1,  double pT_mi
    PROFILE_V1_Y[14] = (TProfile*) PROFILE_V1_Y[0]->Clone("PV14");  PROFILE_V1_Y[14]->SetTitle("omega");
    PROFILE_V1_Y[15] = (TProfile*) PROFILE_V1_Y[0]->Clone("PV15");  PROFILE_V1_Y[15]->SetTitle("omega_bar");
 
-  int nEvents = rif->get_event_buffer_size() ; 
-  for(int ii=0; ii<nEvents; ii++){
-    events* Event = rif->get_event(ii) ; 
-    int nParticles = Event->get_multiplicity_of_the_event();
-    for(int jj=0; jj<nParticles; jj++){
-      int    PID = Event->get_particle(jj)->get_pid() ; 
-      double Px  = Event->get_particle(jj)->get_px()  ; 
-      double Py  = Event->get_particle(jj)->get_py()  ; 
-      double Pz  = Event->get_particle(jj)->get_pz()  ; 
-      double E   = Event->get_particle(jj)->get_e()   ; 
-      double P = sqrt( Px * Px + Py * Py + Pz * Pz )  ;
-      double Pt = sqrt( Px * Px + Py * Py )  ;
-      double W   = Event->get_particle(jj)->get_weight() ; 
-
-      if(Pt > pT_max || Pt < pT_min)
-        continue ; 
-
-      if( fabs(E-Pz) < 1E-10 )
-        continue ; 
-
-      if( fabs(P-Pz) < 1E-10 )
-        continue ; 
-
-      double Rap ;
-
-
-      if (yflag > 0 )
-        Rap = 0.5 * TMath::Log( ( E + Pz ) / (E - Pz) );
-      else
-        Rap = 0.5 * TMath::Log( ( P + Pz ) / (P - Pz) );
-
-     double v1 = Px / Pt ; 
-
-     if(PID ==  211  || PID == -211  || PID ==  321 || PID == -321  || 
-        PID == 2212  || PID == -2212 || PID == 3122 || PID == -3122 ||
-        PID == 3222  || PID == -3222 || PID == 3112 || PID == -3112 ||
-        PID == 3312  || PID == -3312 || PID == 3334 || PID == -3334  ){
-        PROFILE_V1_Y[0]->Fill(Rap,v1,W);
-      }
-
-      if(PID == 211){
-        PROFILE_V1_Y[1]->Fill(Rap,v1,W);
-      }
-      if(PID == -211){
-        PROFILE_V1_Y[2]->Fill(Rap,v1,W);
-      }
-      if(PID == 321){
-        PROFILE_V1_Y[3]->Fill(Rap,v1,W);
-      }
-      if(PID == -321){
-        PROFILE_V1_Y[4]->Fill(Rap,v1,W);
-      }
-      if(PID == 2212){
-        PROFILE_V1_Y[5]->Fill(Rap,v1,W);
-      }
-      if(PID == -2212){
-        PROFILE_V1_Y[6]->Fill(Rap,v1,W);
-      }
-      if(PID == 3122){
-        PROFILE_V1_Y[7]->Fill(Rap,v1,W);
-      }
-      if(PID == -3122){
-        PROFILE_V1_Y[8]->Fill(Rap,v1,W);
-      }
-      if(PID == 313){
-        PROFILE_V1_Y[9]->Fill(Rap,v1,W);
-      }
-      if(PID == -313){
-        PROFILE_V1_Y[10]->Fill(Rap,v1,W);
-      }
-      if(PID == 333){
-        PROFILE_V1_Y[11]->Fill(Rap,v1,W);
-      }
-      if(PID == 3312){
-        PROFILE_V1_Y[12]->Fill(Rap,v1,W);
-      }
-      if(PID == -3312){
-        PROFILE_V1_Y[13]->Fill(Rap,v1,W);
-      }
-      if(PID == 3334){
-        PROFILE_V1_Y[14]->Fill(Rap,v1,W);
-      }
-      if(PID == -3334){
-        PROFILE_V1_Y[15]->Fill(Rap,v1,W);
-      }
-
+   int nEvents = rif->get_event_buffer_size() ; 
+   for(int ii=0; ii<nEvents; ii++){
+     events* Event = rif->get_event(ii) ; 
+     int nParticles = Event->get_multiplicity_of_the_event();
+     for(int jj=0; jj<nParticles; jj++){
+       int    PID = Event->get_particle(jj)->get_pid() ; 
+       double Px  = Event->get_particle(jj)->get_px()  ; 
+       double Py  = Event->get_particle(jj)->get_py()  ; 
+       double Pz  = Event->get_particle(jj)->get_pz()  ; 
+       double E   = Event->get_particle(jj)->get_e()   ; 
+       double P = sqrt( Px * Px + Py * Py + Pz * Pz )  ;
+       double Pt = sqrt( Px * Px + Py * Py )  ;
+       double W   = Event->get_particle(jj)->get_weight() ; 
+       
+       if(Pt > pT_max || Pt < pT_min)
+	 continue ; 
+       
+       if( fabs(E-Pz) < 1E-10 )
+	 continue ; 
+       
+       if( fabs(P-Pz) < 1E-10 )
+	 continue ; 
+       
+       double Rap ;
+              
+       if (yflag > 0 )
+	 Rap = 0.5 * TMath::Log( ( E + Pz ) / (E - Pz) );
+       else
+	 Rap = 0.5 * TMath::Log( ( P + Pz ) / (P - Pz) );
+       
+       double v1 = Px / Pt ; 
+       
+       if(PID ==  211  || PID == -211  || PID ==  321 || PID == -321  || 
+	  PID == 2212  || PID == -2212 || PID == 3122 || PID == -3122 ||
+	  PID == 3222  || PID == -3222 || PID == 3112 || PID == -3112 ||
+	  PID == 3312  || PID == -3312 || PID == 3334 || PID == -3334  ){
+	 PROFILE_V1_Y[0]->Fill(Rap,v1,W);
+       }
+       
+       if(PID == 211){
+	 PROFILE_V1_Y[1]->Fill(Rap,v1,W);
+       }
+       if(PID == -211){
+	 PROFILE_V1_Y[2]->Fill(Rap,v1,W);
+       }
+       if(PID == 321){
+	 PROFILE_V1_Y[3]->Fill(Rap,v1,W);
+       }
+       if(PID == -321){
+	 PROFILE_V1_Y[4]->Fill(Rap,v1,W);
+       }
+       if(PID == 2212){
+	 PROFILE_V1_Y[5]->Fill(Rap,v1,W);
+       }
+       if(PID == -2212){
+	 PROFILE_V1_Y[6]->Fill(Rap,v1,W);
+       }
+       if(PID == 3122){
+	 PROFILE_V1_Y[7]->Fill(Rap,v1,W);
+       }
+       if(PID == -3122){
+	 PROFILE_V1_Y[8]->Fill(Rap,v1,W);
+       }
+       if(PID == 313){
+	 PROFILE_V1_Y[9]->Fill(Rap,v1,W);
+       }
+       if(PID == -313){
+	 PROFILE_V1_Y[10]->Fill(Rap,v1,W);
+       }
+       if(PID == 333){
+	 PROFILE_V1_Y[11]->Fill(Rap,v1,W);
+       }
+       if(PID == 3312){
+	 PROFILE_V1_Y[12]->Fill(Rap,v1,W);
+       }
+       if(PID == -3312){
+	 PROFILE_V1_Y[13]->Fill(Rap,v1,W);
+       }
+       if(PID == 3334){
+	 PROFILE_V1_Y[14]->Fill(Rap,v1,W);
+       }
+       if(PID == -3334){
+	 PROFILE_V1_Y[15]->Fill(Rap,v1,W);
+       }
+       
      } // particle loop
-    } // event loop
-
-  std::ofstream mFile;
-  std::stringstream output_filename;
-
-  std::string hadron_name[_N_HISTOGRAMS_V1_Y_] = {"hpm", "211", "-211", "321", "-321", "2212", "-2212", "3122", "-3122", "313", "-313", "333", "3312", "-3312", "3334", "-3334" };
-  int  hadron_index[_N_HISTOGRAMS_V1_Y_] = {  0,   1 ,   2 ,  3 ,   4,   5,   6,  7,   8,   9,    10,   11,   12,    13,   14,   15  };
-
-
- for(int ix =0; ix < _N_HISTOGRAMS_V1_Y_; ix++){
-   output_filename.str("");
-
-   if(yflag > 0 ){
-     output_filename << "results/v1_y-" << hadron_name[ix];
-     output_filename << "_pT_" << pT_min << "_" << pT_max ;
-   }
-  else{
-     output_filename << "results/v1_eta-" << hadron_name[ix];
-     output_filename << "_pT_" << pT_min << "_" << pT_max ;
-  }
-   output_filename << ".dat";
-
-   mFile.open(output_filename.str().c_str(), std::ios::out );
-   for(int i=1; i<= PROFILE_V1_Y[hadron_index[ix]]->GetNbinsX(); i++){
+   } // event loop
+   
+   std::ofstream mFile;
+   std::stringstream output_filename;
+   
+   std::string hadron_name[_N_HISTOGRAMS_V1_Y_] = {"hpm", "211", "-211", "321", "-321", "2212", "-2212", "3122", "-3122", "313", "-313", "333", "3312", "-3312", "3334", "-3334" };
+   int  hadron_index[_N_HISTOGRAMS_V1_Y_] = {  0,   1 ,   2 ,  3 ,   4,   5,   6,  7,   8,   9,    10,   11,   12,    13,   14,   15  };
+   
+   
+   for(int ix =0; ix < _N_HISTOGRAMS_V1_Y_; ix++){
+     output_filename.str("");
+     
+     if(yflag > 0 ){
+       output_filename << "results/v1_y-" << hadron_name[ix];
+       output_filename << "_pT_" << pT_min << "_" << pT_max ;
+     }
+     else{
+       output_filename << "results/v1_eta-" << hadron_name[ix];
+       output_filename << "_pT_" << pT_min << "_" << pT_max ;
+     }
+     output_filename << ".dat";
+     
+     mFile.open(output_filename.str().c_str(), std::ios::out );
+     for(int i=1; i<= PROFILE_V1_Y[hadron_index[ix]]->GetNbinsX(); i++){
        mFile << PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i) << "\t" << PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) 
-              << "\t" << PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i) << std::endl;
+	     << "\t" << PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i) << std::endl;
+     }
+     mFile.close();
    }
-   mFile.close();
- }
-
-
- // Slope calculation //
- for(int ix =0; ix < _N_HISTOGRAMS_V1_Y_; ix++){
-   output_filename.str("");
-
-   if(yflag > 0 ){
-     output_filename << "results/v1_y-" << hadron_name[ix];
-     output_filename << "_pT_" << pT_min << "_" << pT_max ;
-   }
-  else{
-     output_filename << "results/v1_eta-" << hadron_name[ix];
-     output_filename << "_pT_" << pT_min << "_" << pT_max ;
-  }
-   output_filename << "_slope.dat";
-
-   double xx_val[20] ;
-   double yy_val[20] ;
-   double yy_up_err[20] ;
-   double yy_low_err[20] ;
-   for(int id=0; id<20; id++){
-    xx_val[id] = 0. ; 
-    yy_val[id] = 0. ; 
-    yy_up_err[id] = 0. ; 
-    yy_low_err[id] = 0. ; 
-   }
-  int npoints = 0 ; 
-
-   for(int i=1; i<= PROFILE_V1_Y[hadron_index[ix]]->GetNbinsX(); i++){
-      if( fabs( PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i) ) > 1.1 )
-        continue ;
-      xx_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i)    ;
-      yy_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i)   ;
-      if( PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) > 0 ){
-        yy_up_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) + 
-                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
-        yy_low_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) - 
-                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
-      }
-      else{
-        yy_up_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) - 
-                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
-        yy_low_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) + 
-                          PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ; 
-      }
-
-      npoints += 1 ; 
-   }
-
-   double slope_val = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_val) ;  
-   double slope_up_err = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_up_err) ;
-   double slope_low_err = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_low_err) ;
-   mFile.open(output_filename.str().c_str(), std::ios::out );  
-   mFile << npoints << "  " << slope_val << "  " << (slope_up_err - slope_val) << "  " << ( slope_val - slope_low_err ) << endl ;
-           // Actual slope Error = Slope found from  points with ( value + error ) - (value)
-   mFile.close();
- 
- }
- // slope calculation end //
-
+   
+   
+   // Slope calculation //
+   int fit_range_iterations = 6 ;
+   double fit_range[fit_range_iterations] = { 0.55, 0.65, 0.75, 0.85, 0.95, 1.05 } ;
+   
+   for(int ifri=0; ifri<fit_range_iterations; ifri++){
+     for(int iff=0; iff<2; iff++){
+       
+       for(int ix =0; ix < _N_HISTOGRAMS_V1_Y_; ix++){
+	 output_filename.str("");
+	 
+	 if(yflag > 0 ){
+	   output_filename << "results/v1_y-" << hadron_name[ix];
+	   output_filename << "_pT_" << pT_min << "_" << pT_max ;
+	 }
+	 else{
+	   output_filename << "results/v1_eta-" << hadron_name[ix];
+	   output_filename << "_pT_" << pT_min << "_" << pT_max ;
+	 }
+	 
+	 output_filename << "_slope_fitrange_";
+	 output_filename << fit_range[ifri] ;
+	 output_filename << "_fit_func";
+	 
+	 if(iff == 0 ){
+	   output_filename << "_linear" ;
+	 }
+	 else{
+	   output_filename << "_linear_plus_cubic" ;
+	 }
+	 
+	 output_filename << ".dat";
+	 
+	 double xx_val[20] ;
+	 double yy_val[20] ;
+	 double yy_up_err[20] ;
+	 double yy_low_err[20] ;
+	 for(int id=0; id<20; id++){
+	   xx_val[id] = 0. ;
+	   yy_val[id] = 0. ;
+	   yy_up_err[id] = 0. ;
+	   yy_low_err[id] = 0. ;
+	 }
+	 int npoints = 0 ;
+	 
+	 for(int i=1; i<= PROFILE_V1_Y[hadron_index[ix]]->GetNbinsX(); i++){
+	   if( fabs( PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i) ) > fit_range[ifri] )
+	     continue ;
+	   xx_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinCenter(i)    ;
+	   yy_val[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i)   ;
+	   if( PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) > 0 ){
+	     yy_up_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) +
+	       PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ;
+	     yy_low_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) -
+	       PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ;
+	   }
+	   else{
+	     yy_up_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) -
+	       PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ;
+	     yy_low_err[npoints] = PROFILE_V1_Y[hadron_index[ix]]->GetBinContent(i) +
+	       PROFILE_V1_Y[hadron_index[ix]]->GetBinError(i)   ;
+	   }
+	   
+	   npoints += 1 ;
+	 }
+	 
+	 
+	 double slope_val ;
+	 double slope_up_err ;
+	 double slope_low_err ;
+	 
+	 if(iff == 0 ){
+	   slope_val = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_val) ;
+	   slope_up_err = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_up_err) ;
+	   slope_low_err = fit_a_straight_line_and_get_slope(npoints,xx_val,yy_low_err) ;
+	 }
+	 else{
+	   slope_val = fit_a_cubic_plus_linear_func(npoints,xx_val,yy_val) ;
+	   slope_up_err = fit_a_cubic_plus_linear_func(npoints,xx_val,yy_up_err) ;
+	   slope_low_err = fit_a_cubic_plus_linear_func(npoints,xx_val,yy_low_err) ;
+	 }
+	 mFile.open(output_filename.str().c_str(), std::ios::out );
+	 mFile << npoints << "  " << slope_val << "  " << (slope_up_err - slope_val) << "  " << ( slope_val - slope_low_err ) << endl ;
+	 // Actual slope Error = Slope found from  points with ( value + error ) - (value)
+	 mFile.close();
+	 
+       }
+     } // iff 
+   } // ifri
+   // slope calculation end //
+   
+   
+   
    for(int ixx=0; ixx < _N_HISTOGRAMS_V1_Y_ ; ixx++){
-      PROFILE_V1_Y[ixx]->Clear(); 
+     PROFILE_V1_Y[ixx]->Clear(); 
    }
-
-
+   
+   
 }
 
 
@@ -1061,8 +1094,27 @@ double observables::fit_a_straight_line_and_get_slope(int n, double *x, double *
   }
 
   return ( n * sum_xy - sum_x * sum_y ) / ( n * sum_x_sqr - sum_x * sum_x ) ;
+}
 
 
+double observables::fit_a_cubic_plus_linear_func(int n, double *x, double *y){
+  // fit function ax+bx^3 ; returns a
+  double sum_x_raised_3_y_raised_1     = 0. ;
+  double sum_x_raised_4                = 0. ;
+  double sum_x_raised_1_y_raised_1     = 0. ;
+  double sum_x_raised_6                = 0. ;
+  double sum_x_raised_2                = 0. ;
+
+  for(int i=0; i<n; i++){
+    sum_x_raised_3_y_raised_1  += ( pow(x[i],3)*pow(y[i],1) ) ;
+    sum_x_raised_4             += ( pow(x[i],4) ) ;
+    sum_x_raised_1_y_raised_1  += ( pow(x[i],1)*pow(y[i],1) ) ;
+    sum_x_raised_6             += ( pow(x[i],6) ) ;
+    sum_x_raised_2             += ( pow(x[i],2) ) ;
+  }
+
+  return ( sum_x_raised_3_y_raised_1 * sum_x_raised_4 - sum_x_raised_1_y_raised_1 * sum_x_raised_6 ) /
+              ( sum_x_raised_4 * sum_x_raised_4 - sum_x_raised_2 * sum_x_raised_6 ) ;
 }
 
 
