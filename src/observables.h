@@ -7,6 +7,7 @@
 #include "events.h"
 #include "read_input_file.h"
 #include "inparams.h"
+#include <gsl/gsl_sf.h>
 
 class observables{
 
@@ -21,6 +22,10 @@ class observables{
     void calculate_v2_pt( int yflag, double Rap_min, double Rap_max );
     void calculate_v1_pt( int yflag, double Rap_min, double Rap_max, int reflection_flag );
     void calculate_mean_pt_rap( int yflag, double pTmin, double pTmax);
+    void calculate_amn( int ppid, int yflag, double ymin, double ymax, double ptcutmin, double ptcutmax);
+    void calculate_amn_from_smeared_grid( int ppid, int yflag, double ymin, double ymax, double ptcutmin, double ptcutmax);
+    void calculate_amn_of_charged_hadrons( int yflag, double ymin, double ymax, double ptcutmin, double ptcutmax);
+
 
 
   private :
@@ -28,6 +33,7 @@ class observables{
     input_paramters &iparam ; 
     read_input_file* rif ;
     double fit_a_straight_line_and_get_slope(int n, double *x, double *y) ;
-    double fit_a_cubic_plus_linear_func(int n, double *x, double *y) ;    
+    double fit_a_cubic_plus_linear_func(int n, double *x, double *y) ; 
+    int diskptradius = 2.0 ;    
 
 };

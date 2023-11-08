@@ -43,7 +43,7 @@ void read_parameters::read_parameters_from_file(input_paramters &iparam, string 
 	iparam.input_read_mode = atof(param_value);
       }
 
-      if(param_name == "include_weak_decay"  ){
+      if(param_name == "include_decay"  ){
 	iparam.include_weak_decay = atof(param_value);
       }
 
@@ -81,6 +81,10 @@ void read_parameters::read_parameters_from_file(input_paramters &iparam, string 
 
       if(param_name == "reconst_kstar0_bar_width"  ){
 	iparam.reconst_kstar0_bar_width = atof(param_value);
+      }
+
+      if(param_name == "pdg_type"  ){
+	iparam.pdg_type = atof(param_value);
       }
 
 

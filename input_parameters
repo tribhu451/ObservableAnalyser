@@ -1,10 +1,16 @@
 # The code will not read any empty line or any line that starts with "#"
 
 
-nEvents	1000
-input_read_mode	2
-include_weak_decay 1
+nEvents	25000
+input_read_mode	3     
+include_decay 0
 
+# specify == pdg_type
+# 1 for urQMD PDG with WD OFF
+# else PDG file from MUSIC (pdg05.dat) 
+# which does not include weak decay.
+
+pdg_type 1            
 
 
 # ===================== #

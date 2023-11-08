@@ -22,6 +22,7 @@ typedef struct{
 int nEvents ; 
 int input_read_mode ; 
 int include_weak_decay  ; 
+int pdg_type  ; 
 
 int reconstruct_phi_flag ; 
 int reconstruct_kstar0_flag ; 

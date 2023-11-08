@@ -14,6 +14,7 @@ int main(int argc, char **argv){
 
   if(argc != 3){
     std::cout << "2 arguments required ..." << std::endl ;
+    std::cout << "path of files and number of files to be analysed ... " << std::endl ; 
     exit(1); 
   }
 
@@ -22,7 +23,12 @@ int main(int argc, char **argv){
   r->read_parameters_from_file(iparams, "input_parameters"); 
 
   read_pdg* RPDG = new read_pdg(iparams); 
-  RPDG->read_and_store_particle_properties_with_decay_channels("PDG/pdg-urqmd_v3.3+_weak.dat");
+  if(iparams.pdg_type==1){
+    RPDG->read_and_store_particle_properties_with_decay_channels("PDG/pdg-urqmd_v3.3+_weak.dat");
+  }
+  else{
+    RPDG->read_and_store_particle_properties_with_decay_channels("PDG/pdg05_music_wd_off.dat");
+  }
 
   reso_decays* RD = new reso_decays(RPDG);
   read_input_file* RIF = new read_input_file(iparams, RD, argv[1], atof(argv[2]) );
@@ -67,17 +73,21 @@ int main(int argc, char **argv){
 
   // calculating the observables //
   observables* OBJ = new observables(iparams,RIF);
-  OBJ->calculate_dnchdeta_eta(0.01,3);
-  OBJ->calculate_dndy_y(0.01,3);
-  OBJ->calculate_invariant_yield_vs_pt(0, -0.5, 0.5);
-  OBJ->calculate_invariant_yield_vs_pt(1, -0.5, 0.5);
-  OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.2, 2 );
-  OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.2, 2 );
-  OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.4, 2 );
-  OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.4, 2 );
-  OBJ->calculate_v2_pt( 0, -1.0, 1.0 );
-  OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
+  //OBJ->calculate_dnchdeta_eta(0.01,3);
+  //OBJ->calculate_dndy_y(0.01,3);
+  //OBJ->calculate_invariant_yield_vs_pt(0, -0.5, 0.5);
+  //OBJ->calculate_invariant_yield_vs_pt(1, -0.5, 0.5);
+  //OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.2, 2 );
+  //OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.2, 2 );
+  //OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.4, 2 );
+  //OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.4, 2 );
+  //OBJ->calculate_v2_pt( 0, -1.0, 1.0 );
+  //OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
 
+  //OBJ->calculate_amn(  211,  0,  -0.5,  0.5, 0.1, 2);
+  //OBJ->calculate_amn_from_smeared_grid(  211,  0,  -0.5,  0.5, 0.1, 2);
+  OBJ->calculate_amn_of_charged_hadrons( 0,  -0.5,  0.5, 0.1, 2);
+  OBJ->calculate_amn_of_charged_hadrons( 0,  -0.5,  0.5, 0.01, 2);
   return 0;
 }
 
