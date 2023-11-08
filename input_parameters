@@ -6,7 +6,7 @@ input_read_mode	3
 include_decay 0
 
 # specify == pdg_type
-# 1 for urQMD PDG with WD OFF
+# 1 for urQMD PDG with WD ON
 # else PDG file from MUSIC (pdg05.dat) 
 # which does not include weak decay.
 
