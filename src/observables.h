@@ -25,7 +25,7 @@ class observables{
     void calculate_amn( int ppid, int yflag, double ymin, double ymax, double ptcutmin, double ptcutmax);
     void calculate_amn_from_smeared_grid( int ppid, int yflag, double ymin, double ymax, double ptcutmin, double ptcutmax);
     void calculate_amn_of_charged_hadrons( int yflag, double ymin, double ymax, double ptcutmin, double ptcutmax);
-
+    void calculate_amn_vs_rapidity( int ppid, int yflag, double ptcutmin, double ptcutmax);
 
 
   private :

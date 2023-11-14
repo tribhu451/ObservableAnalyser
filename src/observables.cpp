@@ -1722,6 +1722,192 @@ void observables::calculate_amn_from_smeared_grid( int ppid, int yflag, double y
 
 
 
+void observables::calculate_amn_vs_rapidity( int ppid, int yflag, double ptcutmin, double ptcutmax){
+  
+  std::cout << "Calculating Amn vs rapidity of "  << ppid << " ... " <<  std::endl ; 
+  double pT0 = diskptradius ; // in GeV (disc radius)
+  int mmax=5 ; 
+  int nmax=5 ; 
+
+
+  double ymin = -3.0 ; // in GeV
+  double ymax = 3.0 ; // in GeV
+  int ny = 31 ; 
+  double dy = ( ymax - ymin ) / ny ;
+
+
+  double amnRe[ny][mmax][nmax];
+  double amnIm[ny][mmax][nmax];
+  double temp_amnRe[ny][mmax][nmax];
+  double temp_amnIm[ny][mmax][nmax];
+  double lambda[mmax][nmax];
+  for(int iy=0; iy<ny; iy++){
+   for(int im=0; im<mmax; im++){
+    for(int in=0; in<nmax; in++){
+      amnRe[iy][im][in] = 0. ; 
+      amnIm[iy][im][in] = 0. ; 
+      temp_amnRe[iy][im][in] = 0. ; 
+      temp_amnIm[iy][im][in] = 0. ; 
+      lambda[im][in] = 0. ; 
+    }
+   }
+  }
+
+  double particles_norm[ny] ; 
+  for(int iy=0; iy<ny; iy++){
+    particles_norm[iy] = 0 ; 
+  }
+
+  // calculate zeros of Bessel function
+  for(int im=0; im<mmax; im++){
+    for(int in=0; in<nmax; in++){
+      if(in==0){
+        continue ;
+      }
+      lambda[im][in] = gsl_sf_bessel_zero_Jnu(fabs(im),in) ; 
+    }
+  }
+
+  
+  int nEvents = rif->get_event_buffer_size() ; 
+  for(int ii=0; ii<nEvents; ii++){
+    if(ii%500 == 0){
+      std::cout << "Analysing event " << ii << std::endl ; 
+    }
+
+    // set tempAmn for each event to zero at starting of event //
+    for(int iy=0; iy<ny; iy++){
+     for(int im=0; im<mmax; im++){
+      for(int in=0; in<nmax; in++){
+        temp_amnRe[iy][im][in] = 0. ; 
+        temp_amnIm[iy][im][in] = 0. ; 
+      }
+     }
+    }
+
+    events* Event = rif->get_event(ii) ; 
+    int nParticles = Event->get_multiplicity_of_the_event();
+    double temp_particles_norm[ny] ; 
+    for(int iy=0; iy<ny; iy++){
+      temp_particles_norm[iy] = 0 ; 
+    }
+    for(int jj=0; jj<nParticles; jj++){
+      int    PID = Event->get_particle(jj)->get_pid() ; 
+      if( fabs(PID-ppid) > 0.1 ){
+	continue ; 
+      }
+      double Px  = Event->get_particle(jj)->get_px()  ; 
+      double Py  = Event->get_particle(jj)->get_py()  ; 
+      double Pz  = Event->get_particle(jj)->get_pz()  ; 
+      double E   = Event->get_particle(jj)->get_e()   ; 
+      double P = sqrt( Px * Px + Py * Py + Pz * Pz )  ;
+      double W   = Event->get_particle(jj)->get_weight() ; 
+      double Rap ; 
+            
+      if( fabs(E-Pz) < 1E-10 )
+	continue ; 
+      
+      if( fabs(P-Pz) < 1E-10 )
+	continue ; 
+         
+      if (yflag > 0 )
+	Rap = 0.5 * TMath::Log( ( E + Pz ) / (E - Pz) );
+      else
+	Rap = 0.5 * TMath::Log( ( P + Pz ) / (P - Pz) );
+      
+      if(Rap >= ymax || Rap <= ymin ){
+	continue ; 
+      }
+
+      int ybin = floor((Rap - ymin) / dy ); 
+      
+      double Pt = sqrt( Px * Px + Py * Py ) ;
+      double Phi = atan2(Py,Px) ;
+      if(Pt < ptcutmin || Pt > ptcutmax){
+	continue ; 
+      }
+      
+      temp_particles_norm[ybin] += 1. ; 
+      double lambda_mn ; 
+      for(int im=0; im<mmax; im++){
+	for(int in=0; in<nmax; in++){
+	  if(in==0){
+	    continue ; 
+	  }
+	  
+	  // get n-th zero of J_m(x) // 
+	  lambda_mn =  lambda[im][in] ; 
+
+	  temp_amnRe[ybin][im][in] +=  ( 1./gsl_sf_bessel_Jn( fabs(im)+1, lambda_mn ) * gsl_sf_bessel_Jn(im,  Pt / pT0 * lambda_mn ) * cos(im*Phi) )  ; 
+	  temp_amnIm[ybin][im][in] +=  ( 1./gsl_sf_bessel_Jn( fabs(im)+1, lambda_mn ) * gsl_sf_bessel_Jn(im,  Pt / pT0 * lambda_mn ) * sin(im*Phi) * (-1.0) )  ; 
+	} // in loop
+      } // im loop
+      
+    } // particle loop
+
+    for(int iy=0; iy<ny; iy++){
+     for(int im=0; im<mmax; im++){
+      for(int in=0; in<nmax; in++){
+        if(in==0){
+          continue ; 
+        }
+        amnRe[iy][im][in] += temp_amnRe[iy][im][in] ; 
+        amnIm[iy][im][in] += temp_amnIm[iy][im][in] ; 
+      }
+     }
+    }
+
+   for(int iy=0; iy<ny; iy++){
+     particles_norm[iy] += temp_particles_norm[iy] ;
+   } 
+
+  } // event loop
+  
+  
+  for(int iy=0; iy<ny; iy++){
+   for(int im=0; im<mmax; im++){
+    for(int in=0; in<nmax; in++){
+      if(in==0){
+        continue ; 
+      }
+      amnRe[iy][im][in] /= ( particles_norm[iy] * M_PI * pT0 * pT0 ) ; 
+      amnIm[iy][im][in] /= ( particles_norm[iy] * M_PI * pT0 * pT0 ) ; 
+    }
+   }
+  }
+  
+  std::ofstream mFile;
+  std::stringstream output_filename;
+
+  for(int im=0; im<mmax; im++){
+   for(int in=0; in<nmax; in++){
+     if(in==0){
+      continue ; 
+     }
+     output_filename.str("");
+     if(yflag > 0 ){
+      output_filename << "results/A" << im << in << "_" << ppid ;
+     output_filename << "_with_y" ;
+    }
+    else{
+     output_filename << "results/Amn-" << ppid;
+     output_filename << "_with_eta" ;
+    }
+    output_filename << "_pt_" << ptcutmin << "_" << ptcutmax ;
+    output_filename << "_pt0_" << pT0 ;
+    output_filename << ".dat";
+    mFile.open(output_filename.str().c_str(), std::ios::out );
+    mFile << "#(m= " << im << "  n= " << in << ")  rap  AmnRe  AmnIm  |Amn| " << std::endl ; 
+    for(int iy=0; iy<ny; iy++){  
+      mFile << ymin + (iy * dy) + (0.5 * dy) << "  " << amnRe[iy][im][in] << "  " << amnIm[iy][im][in] 
+	    << "  " << sqrt(pow(amnRe[iy][im][in],2)+pow(amnIm[iy][im][in],2)) << std::endl ; 
+   }
+  mFile.close(); 
+  }
+ }
+
+}
+
 
 
 
