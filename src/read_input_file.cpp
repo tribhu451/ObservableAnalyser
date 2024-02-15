@@ -173,9 +173,9 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
 
    file.open(input_filename1.str().c_str(),std::ios::binary | std::ios::in);
    if(!file){
-     std::cout << "file not found." 
+     std::cout << input_filename1.str().c_str() << " not found ..." 
                  << std::endl;
-     exit(1);
+     continue ; 
    }
 
 
@@ -277,9 +277,9 @@ void read_input_file::read_particle_list_dat_from_iSS_binary(int TotalEvents){
 
    file.open(input_filename1.str().c_str(),std::ios::binary | std::ios::in);
    if(!file){
-     std::cout << "file not found." 
+     std::cout << input_filename1.str().c_str() << " not found ..." 
                  << std::endl;
-     exit(1);
+     continue ; 
    }
 
 

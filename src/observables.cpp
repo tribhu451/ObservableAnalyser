@@ -963,9 +963,6 @@ void observables::calculate_v1_pt( int yflag, double Rap_min, double Rap_max, in
       double Pt = sqrt( Px * Px + Py * Py )  ;
       double v1 = Px / Pt ; ;
 
-      if(Rap > Rap_max || Rap < Rap_min)
-        continue ; 
-
       if(reflection_flag>0){
         if( fabs(Rap) > Rap_max || fabs(Rap) < Rap_min ){
           continue ;
