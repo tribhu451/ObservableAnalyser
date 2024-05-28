@@ -195,10 +195,10 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
     for(int i=0; i<nch ; i++){
 
         float particle_array[11];
-          for (int i = 0; i < 11; i++) {
+          for (int jj = 0; jj < 11; jj++) {
               float temp;
               file.read(reinterpret_cast<char *>(&temp), sizeof(float));
-              particle_array[i] = temp;
+              particle_array[jj] = temp;
           }
             mass = particle_array[0] ; 
             pid = particle_array[1] ; 
@@ -299,10 +299,10 @@ void read_input_file::read_particle_list_dat_from_iSS_binary(int TotalEvents){
     for(int i=0; i<nch ; i++){
 
         float particle_array[10];
-          for (int i = 0; i < 10; i++) {
+          for (int jj = 0; jj < 10; jj++) {
               float temp;
               file.read(reinterpret_cast<char *>(&temp), sizeof(float));
-              particle_array[i] = temp;
+              particle_array[jj] = temp;
           }
             mass = particle_array[0] ; 
             pid = particle_array[1] ; 
