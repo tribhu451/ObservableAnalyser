@@ -167,9 +167,11 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
    std::stringstream input_filename1;
    input_filename1.str(std::string());
    input_filename1 << path_for_input_file_to_be_read.c_str() ;
-   input_filename1 << "/particle_list_set_";
-   input_filename1 << input_file_index ;
-   input_filename1 << ".bin";
+   //input_filename1 << "/particle_list_set_";
+   //input_filename1 << input_file_index ;
+   //input_filename1 << ".bin";
+   input_filename1 << "/particle_list.bin";
+
 
    file.open(input_filename1.str().c_str(),std::ios::binary | std::ios::in);
    if(!file){

@@ -2,8 +2,8 @@
 
 
 nEvents	25000
-input_read_mode	3     
-include_decay 0
+input_read_mode	2     
+include_decay 1
 
 # specify == pdg_type
 # 1 for urQMD PDG with WD ON

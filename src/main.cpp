@@ -84,15 +84,9 @@ int main(int argc, char **argv){
   //OBJ->calculate_v2_pt( 0, -1.0, 1.0 );
   //OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
 
-  //OBJ->calculate_amn(  211,  0,  -0.5,  0.5, 0.1, 2);
-  //OBJ->calculate_amn_from_smeared_grid(  211,  0,  -0.5,  0.5, 0.1, 2);
-  //OBJ->calculate_amn_of_charged_hadrons( 0,  -0.5,  0.5, 0.1, 2);
-  //OBJ->calculate_amn_of_charged_hadrons( 0,  -0.5,  0.5, 0.01, 2);
-  OBJ->calculate_amn_vs_rapidity( 211, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( 321, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( -321, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( 2212, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( -2212, 1,  0.2, 2);
+  OBJ->calculate_mean_pt_rap(0,0.2,3);
+
+
   return 0;
 }
 
