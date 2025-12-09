@@ -8,6 +8,7 @@
 #include "read_pdg.h"
 #include "inparams.h"
 #include "reconstruction.h"
+#include "mpt_decorr.h"
 
 
 int main(int argc, char **argv){
@@ -30,9 +31,11 @@ int main(int argc, char **argv){
     RPDG->read_and_store_particle_properties_with_decay_channels("PDG/pdg05_music_wd_off.dat");
   }
 
+  
   reso_decays* RD = new reso_decays(RPDG);
   read_input_file* RIF = new read_input_file(iparams, RD, argv[1], atof(argv[2]) );
 
+  /*
   int nEvents = iparams.nEvents ; 
   
   // reading the input files //
@@ -69,10 +72,10 @@ int main(int argc, char **argv){
               << std::endl ; 
     REC->reconstruct_kstar0_bar();
   }
-
+  */
 
   // calculating the observables //
-  observables* OBJ = new observables(iparams,RIF);
+  //observables* OBJ = new observables(iparams,RIF);
   //OBJ->calculate_dnchdeta_eta(0.01,3);
   //OBJ->calculate_dndy_y(0.01,3);
   //OBJ->calculate_invariant_yield_vs_pt(0, -0.5, 0.5);
@@ -83,9 +86,10 @@ int main(int argc, char **argv){
   //OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.4, 2 );
   //OBJ->calculate_v2_pt( 0, -1.0, 1.0 );
   //OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
+  //OBJ->calculate_mean_pt_rap(0,0.2,3);
 
-  OBJ->calculate_mean_pt_rap(0,0.2,3);
-
+  mpt_decorr* md = new mpt_decorr(iparams,RIF, 0, 0, 0.2, 3); // part, yflag, ptmin, ptmax
+ 
 
   return 0;
 }
