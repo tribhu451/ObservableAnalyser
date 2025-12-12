@@ -35,7 +35,7 @@ int main(int argc, char **argv){
   reso_decays* RD = new reso_decays(RPDG);
   read_input_file* RIF = new read_input_file(iparams, RD, argv[1], atof(argv[2]) );
 
-  /*
+  
   int nEvents = iparams.nEvents ; 
   
   // reading the input files //
@@ -51,7 +51,7 @@ int main(int argc, char **argv){
     std::cout << "reading mode not specified. Exiting ..." << std::endl ;  
     exit(1); 
   }
-
+ /*
   // Reconstructing the resonances //
   reconstruction* REC = new reconstruction(iparams,RIF);
   if(iparams.reconstruct_phi_flag > 0){
@@ -89,7 +89,7 @@ int main(int argc, char **argv){
   //OBJ->calculate_mean_pt_rap(0,0.2,3);
 
   mpt_decorr* md = new mpt_decorr(iparams,RIF, 0, 0, 0.2, 3); // part, yflag, ptmin, ptmax
- 
+  md->write_mean_and_variance_of_pt_with_eta();
 
   return 0;
 }

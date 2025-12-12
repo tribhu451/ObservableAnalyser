@@ -170,6 +170,7 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
    //input_filename1 << "/particle_list_set_";
    //input_filename1 << input_file_index ;
    //input_filename1 << ".bin";
+   input_filename1 << "RUN" << input_file_index ;
    input_filename1 << "/particle_list.bin";
 
 
