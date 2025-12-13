@@ -182,9 +182,138 @@ void mpt_decorr::write_mean_and_variance_of_pt_with_eta(){
 
 
 
+// not verified yet whether the values falls in ball park //
+// but still uploaded to github //
+// TODO : check it //
+void mpt_decorr::calculate_covariance_of_mean_pt_of_one_ensemble(int ieta1, int ieta2, 
+std::vector<int> event_ID_ens, double& cov, double& RMpt){
+  double sum_mpt_1 = 0. ; 
+  double sum_mpt_2 = 0. ; 
+  double sum_mpt_1_sq = 0. ; 
+  double sum_mpt_2_sq = 0. ; 
+  for(long unsigned int ii=0; ii<event_ID_ens.size(); ii++){
+    int eventID = event_ID_ens[ii] ;
+    sum_mpt_1 += get_IptI(eventID,ieta1); 
+    sum_mpt_2 += get_IptI(eventID,ieta2); 
+    sum_mpt_1_sq += get_IptI(eventID,ieta1) * get_IptI(eventID,ieta1); 
+    sum_mpt_2_sq += get_IptI(eventID,ieta2) * get_IptI(eventID,ieta2); 
+
+  }
+  sum_mpt_1    /= event_ID_ens.size() ; 
+  sum_mpt_2    /= event_ID_ens.size() ; 
+  sum_mpt_1_sq /= event_ID_ens.size() ; 
+  sum_mpt_2_sq /= event_ID_ens.size() ; 
+
+  double sum_cov=0. ;
+  for(long unsigned int ii=0; ii<event_ID_ens.size(); ii++){
+    int eventID = event_ID_ens[ii] ;
+    sum_cov +=  (get_IptI(eventID,ieta1) - sum_mpt_1) * (get_IptI(eventID,ieta2) - sum_mpt_2) ; 
+  }
+  cov = sum_cov / event_ID_ens.size() ; 
+  if( (sum_mpt_1_sq - sum_mpt_1 * sum_mpt_1 ) < 0 || (sum_mpt_2_sq - sum_mpt_2 * sum_mpt_2 ) < 0 ){
+    std::cerr << "Cov_<pT> / R_<pT> calculation error !!!" << std::endl ; exit(-1); 
+  }
+  else{ 
+    RMpt = cov / ( sqrt(sum_mpt_1_sq - sum_mpt_1 * sum_mpt_1 ) * sqrt(sum_mpt_2_sq - sum_mpt_2 * sum_mpt_2 ) );
+  }
+}
 
 
+// not verified yet whether the values falls in ball park //
+// but still uploaded to github //
+// TODO : check it //
+void mpt_decorr::calculate_r_mean_pt_of_one_ensemble(int ieta1, int ieta2, 
+std::vector<int> event_ID_ens, double& rMpt){
+ double cov_num ;
+ double cov_den ; 
+ double dummy ;
+ calculate_covariance_of_mean_pt_of_one_ensemble(ieta1, ieta2, event_ID_ens, cov_num, dummy);
+ calculate_covariance_of_mean_pt_of_one_ensemble(ieta1, -ieta2, event_ID_ens, cov_den, dummy);
+ rMpt = cov_num / cov_den ; 
+}
 
+
+// not verified yet whether the values falls in ball park //
+// but still uploaded to github //
+// TODO : check it //
+void mpt_decorr::write_covariance_of_meanpt(){
+  std::ofstream mFile;
+  std::stringstream output_filename;
+  std::vector<int> event_ID_ens;
+  double sumMean1[Neta];
+  double sumMeanSq1[Neta];
+  double sumMean2[Neta];
+  double sumMeanSq2[Neta];
+  double sumMean3[Neta];
+  double sumMeanSq3[Neta];
+  double temp1, temp2, temp3 ; 
+
+  for(int ieta=0; ieta<Neta; ieta++){
+   sumMean1[ieta]   = 0. ; 
+   sumMeanSq1[ieta] = 0. ; 
+   sumMean2[ieta]   = 0. ; 
+   sumMeanSq2[ieta] = 0. ; 
+   sumMean3[ieta]   = 0. ; 
+   sumMeanSq3[ieta] = 0. ; 
+  }
+
+  for(int ieta1=0; ieta1<Neta; ieta1++){
+    for(int ieta2=0; ieta2<Neta; ieta2++){
+      sumMean1[ieta2]   = 0. ; 
+      sumMeanSq1[ieta2] = 0. ; 
+      sumMean2[ieta2]   = 0. ; 
+      sumMeanSq2[ieta2] = 0. ; 
+      sumMean3[ieta2]   = 0. ; 
+      sumMeanSq3[ieta2] = 0. ; 
+      for(int ievents=0; ievents<Nevents; ievents++){
+        event_ID_ens = get_an_event_ensemble();
+        calculate_covariance_of_mean_pt_of_one_ensemble(ieta1, ieta2, event_ID_ens, temp1, temp2);
+        calculate_r_mean_pt_of_one_ensemble(ieta1, ieta2, event_ID_ens, temp3);
+        sumMean1[ieta2]   += temp1 ;
+        sumMeanSq1[ieta2] += temp1 * temp1 ;
+        sumMean2[ieta2]   += temp2 ;
+        sumMeanSq2[ieta2] += temp2 * temp2 ;
+        sumMean3[ieta2]   += temp3 ;
+        sumMeanSq3[ieta2] += temp3 * temp3 ;
+      } // ievents loop
+
+      sumMean1[ieta2]   /= Nevents ; 
+      sumMeanSq1[ieta2] /= Nevents ; 
+      sumMean2[ieta2]   /= Nevents ; 
+      sumMeanSq2[ieta2] /= Nevents ; 
+      sumMean3[ieta2]   /= Nevents ; 
+      sumMeanSq3[ieta2] /= Nevents ;  
+     
+    } // loop over eta2
+
+
+      // write to file
+      output_filename.str("");
+      output_filename << "results/Covariance_of_meanpt";
+      output_filename << "_pt_";
+      output_filename << ptmin << "_" << ptmax << "_with" ;
+      if(yflag==1){
+       output_filename << "_y" ;
+      }
+      else{
+       output_filename << "_eta" ;
+      }
+      output_filename << "_" << part ;
+      output_filename << "_etaref_" << eta_bin_centers[ieta1] ;
+      output_filename << ".dat";
+      mFile.open(output_filename.str().c_str(), std::ios::out );
+      for(int ieta2=0; ieta2<Neta; ieta2++){
+        mFile << "eta1  eta2   cov(eta1,eta2)   error   Rpt(eta1,eta2)  error  rpt(eta1,eta2)" << std::endl ;
+        mFile << eta_bin_centers[ieta1] << "   " << eta_bin_centers[ieta2] << "   " <<  sumMean1[ieta2] << "  "
+         << sqrt(sumMeanSq1[ieta2] - sumMean1[ieta2]*sumMean1[ieta2]) << "   " << sumMean2[ieta2] << "  "
+         << sqrt(sumMeanSq2[ieta2] - sumMean2[ieta2]*sumMean2[ieta2]) << "   " << sumMean3[ieta2] << "  "
+         << sqrt(sumMeanSq3[ieta2] - sumMean3[ieta2]*sumMean3[ieta2]) << "   " << std::endl ; 
+      }
+      mFile.close();
+
+  } // loop over eta1
+
+}
 
 
 

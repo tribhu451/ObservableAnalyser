@@ -90,7 +90,7 @@ int main(int argc, char **argv){
 
   mpt_decorr* md = new mpt_decorr(iparams,RIF, 0, 0, 0.2, 3); // part, yflag, ptmin, ptmax
   md->write_mean_and_variance_of_pt_with_eta();
-
+  md->write_covariance_of_meanpt();
   return 0;
 }
 

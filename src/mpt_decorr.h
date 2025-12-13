@@ -33,11 +33,16 @@ class mpt_decorr{
     std::vector<int> get_an_event_ensemble();
     void calculate_mean_and_variance_of_pt_of_one_ensemble( int ieta,
       std::vector<int> event_ID_ens, double&  Mpt, double&  var_Mpt);
+    void calculate_covariance_of_mean_pt_of_one_ensemble(int ieta1, int ieta2, 
+      std::vector<int> event_ID_ens, double& cov, double& RMpt);
+    void calculate_r_mean_pt_of_one_ensemble(int ieta1, int ieta2, 
+      std::vector<int> event_ID_ens, double& rMpt);
 
    public :
      mpt_decorr(input_paramters &iparam_, read_input_file*, 
       int _part, int _yflag, float _ptmin, float _ptmax );
      ~mpt_decorr();
      void write_mean_and_variance_of_pt_with_eta();
+     void write_covariance_of_meanpt();
 
 };
