@@ -3,7 +3,6 @@
 #include <vector>
 #include "events.h"
 #include "read_input_file.h"
-#include "observables.h"
 #include "inparams.h"
 #include "read_pdg.h"
 #include "inparams.h"
@@ -73,20 +72,6 @@ int main(int argc, char **argv){
     REC->reconstruct_kstar0_bar();
   }
   */
-
-  // calculating the observables //
-  //observables* OBJ = new observables(iparams,RIF);
-  //OBJ->calculate_dnchdeta_eta(0.01,3);
-  //OBJ->calculate_dndy_y(0.01,3);
-  //OBJ->calculate_invariant_yield_vs_pt(0, -0.5, 0.5);
-  //OBJ->calculate_invariant_yield_vs_pt(1, -0.5, 0.5);
-  //OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.2, 2 );
-  //OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.2, 2 );
-  //OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.4, 2 );
-  //OBJ->calculate_v1_vs_y_or_eta(1, 0, 0.4, 2 );
-  //OBJ->calculate_v2_pt( 0, -1.0, 1.0 );
-  //OBJ->calculate_v2_pt( 1, -0.5, 0.5 );
-  //OBJ->calculate_mean_pt_rap(0,0.2,3);
 
   mpt_decorr* md = new mpt_decorr(iparams,RIF, 0, 0, 0.2, 3); // part, yflag, ptmin, ptmax
   md->write_mean_and_variance_of_pt_with_eta();

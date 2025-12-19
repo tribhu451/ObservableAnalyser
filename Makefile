@@ -17,7 +17,7 @@ LIBS          = $(ROOTLIBS) $(SYSLIBS) $(GSLLIBS)
 vpath %.cpp src
 objdir     = obj
 
-SRC        = main.cpp events.cpp read_input_file.cpp particles.cpp observables.cpp\
+SRC        = main.cpp events.cpp read_input_file.cpp particles.cpp \
              decay_channel.cpp decay_table.cpp  pdg_properties.cpp  read_pdg.cpp\
              reso_decays.cpp inparams.cpp reconstruction.cpp random.cpp mpt_decorr.cpp
                 

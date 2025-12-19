@@ -6,6 +6,7 @@ mpt_decorr::mpt_decorr(input_paramters &iparam_, read_input_file* rif_,
  part(_part), yflag(_yflag), ptmin(_ptmin), ptmax(_ptmax){
   rand = new random_gen();
   Nevents = rif->get_event_buffer_size() ; 
+  
 
   etamin = -5.25 ; 
   etamax = 5.25 ;
@@ -302,8 +303,8 @@ void mpt_decorr::write_covariance_of_meanpt(){
       output_filename << "_etaref_" << eta_bin_centers[ieta1] ;
       output_filename << ".dat";
       mFile.open(output_filename.str().c_str(), std::ios::out );
+      mFile << "eta1  eta2   cov(eta1,eta2)   error   Rpt(eta1,eta2)  error  rpt(eta1,eta2)" << std::endl ;
       for(int ieta2=0; ieta2<Neta; ieta2++){
-        mFile << "eta1  eta2   cov(eta1,eta2)   error   Rpt(eta1,eta2)  error  rpt(eta1,eta2)" << std::endl ;
         mFile << eta_bin_centers[ieta1] << "   " << eta_bin_centers[ieta2] << "   " <<  sumMean1[ieta2] << "  "
          << sqrt(sumMeanSq1[ieta2] - sumMean1[ieta2]*sumMean1[ieta2]) << "   " << sumMean2[ieta2] << "  "
          << sqrt(sumMeanSq2[ieta2] - sumMean2[ieta2]*sumMean2[ieta2]) << "   " << sumMean3[ieta2] << "  "

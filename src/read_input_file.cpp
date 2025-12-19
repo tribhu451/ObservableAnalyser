@@ -153,7 +153,7 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
 
   std::cout << "reading particle_list.bin of urqmd ..." 
               << std::endl ; 
- 
+  std::cout << "reading all oversampling events as the particles from a single event ..." << std::endl ; 
   std::string dummy ;
   int nch ;
   int pid ;
@@ -183,6 +183,8 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
 
 
   std::cout << "reading file : " << input_filename1.str().c_str() << " ... " << std::endl ; 
+  events* Event = new events();
+
 
   int ii=0 ; 
    while (ii < TotalEvents){
@@ -193,8 +195,6 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
     std::cout << ii << "\t" << nch << std::endl ;
     }
 
-    events* Event = new events();
- 
     for(int i=0; i<nch ; i++){
 
         float particle_array[11];
@@ -218,11 +218,9 @@ void read_input_file::read_particle_list_dat_from_urqmd_binary(int TotalEvents){
       // add the particle to the event
       Event->add_particle(get_PID_from_urqmd_MCID(pid,temp_iso), t, x, y, z, e, px, py, pz) ;
     } // particle loop
-
-    event_vector.push_back(*Event);
     ii++ ; 
   }
-
+  event_vector.push_back(*Event);
   file.close() ;
  } // input_file_index loop
 
