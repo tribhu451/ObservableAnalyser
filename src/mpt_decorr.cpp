@@ -183,9 +183,7 @@ void mpt_decorr::write_mean_and_variance_of_pt_with_eta(){
 
 
 
-// not verified yet whether the values falls in ball park //
-// but still uploaded to github //
-// TODO : check it //
+
 void mpt_decorr::calculate_covariance_of_mean_pt_of_one_ensemble(int ieta1, int ieta2, 
 std::vector<int> event_ID_ens, double& cov, double& RMpt){
   double sum_mpt_1 = 0. ; 
@@ -220,23 +218,20 @@ std::vector<int> event_ID_ens, double& cov, double& RMpt){
 }
 
 
-// not verified yet whether the values falls in ball park //
-// but still uploaded to github //
-// TODO : check it //
+
 void mpt_decorr::calculate_r_mean_pt_of_one_ensemble(int ieta1, int ieta2, 
 std::vector<int> event_ID_ens, double& rMpt){
  double cov_num ;
  double cov_den ; 
  double dummy ;
- calculate_covariance_of_mean_pt_of_one_ensemble(ieta1, ieta2, event_ID_ens, cov_num, dummy);
- calculate_covariance_of_mean_pt_of_one_ensemble(ieta1, -ieta2, event_ID_ens, cov_den, dummy);
+ // the bin at a given rapidity window -eta in the other side of pseudorapidity is (Neta-1-ieta2)
+ calculate_covariance_of_mean_pt_of_one_ensemble(ieta1, (Neta-1-ieta2), event_ID_ens, cov_num, dummy);
+ calculate_covariance_of_mean_pt_of_one_ensemble(ieta1, ieta2, event_ID_ens, cov_den, dummy);
  rMpt = cov_num / cov_den ; 
 }
 
 
-// not verified yet whether the values falls in ball park //
-// but still uploaded to github //
-// TODO : check it //
+
 void mpt_decorr::write_covariance_of_meanpt(){
   std::ofstream mFile;
   std::stringstream output_filename;
