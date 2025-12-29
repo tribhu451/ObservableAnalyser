@@ -127,6 +127,9 @@ void mpt_decorr::write_mean_and_variance_of_pt_with_eta(){
   double sumMeanSq[Neta];
   double sumVar[Neta];
   double sumVarSq[Neta];
+  double sumxx[Neta]; // xx = sigma_pt / mean_pt
+  double sumxxSq[Neta];
+
   double temp_Mpt, temp_varMpt ; 
 
   for(int ieta=0; ieta<Neta; ieta++){
@@ -144,6 +147,9 @@ void mpt_decorr::write_mean_and_variance_of_pt_with_eta(){
       sumMeanSq[ieta] += temp_Mpt * temp_Mpt ;
       sumVar[ieta]    += temp_varMpt ;
       sumVarSq[ieta]  += temp_varMpt * temp_varMpt ;
+      sumxx[ieta]     += sqrt(temp_varMpt)/temp_Mpt ; // sigma_pt / mean_pt
+      sumxxSq[ieta]   += (sqrt(temp_varMpt)/temp_Mpt) * (sqrt(temp_varMpt)/temp_Mpt) ;
+
     } // loop over eta
   } // ievents loop
 
@@ -152,6 +158,8 @@ void mpt_decorr::write_mean_and_variance_of_pt_with_eta(){
    sumMeanSq[ieta] /= Nevents ; 
    sumVar[ieta]    /= Nevents ; 
    sumVarSq[ieta]  /= Nevents ; 
+   sumxx[ieta]     /= Nevents ; 
+   sumxxSq[ieta]   /= Nevents ; 
   }
 
   std::ofstream mFile;
@@ -170,12 +178,15 @@ void mpt_decorr::write_mean_and_variance_of_pt_with_eta(){
   output_filename << "_" << part ;
   output_filename << ".dat";
   mFile.open(output_filename.str().c_str(), std::ios::out );
-  mFile << "eta   <pt>   error   Var(<pt>)  error" << std::endl ;
+  mFile << "eta   <pt>   error   Var(<pt>)  error  SigmapT/Mpt  error" << std::endl ;
   for(int ieta=0; ieta<Neta; ieta++){
    mFile << eta_bin_centers[ieta] << "   " << sumMean[ieta] << "   " 
    << sqrt(sumMeanSq[ieta] - sumMean[ieta]*sumMean[ieta]) << "   "
    << sumVar[ieta] << "  "
-   << sqrt(sumVarSq[ieta] - sumVar[ieta]*sumVar[ieta]) << std::endl ; 
+   << sqrt(sumVarSq[ieta] - sumVar[ieta]*sumVar[ieta]) << "  "  
+   << sumxx[ieta] << "  "
+   << sqrt(sumxxSq[ieta] - sumxx[ieta]*sumxx[ieta]) << std::endl ; 
+
   }
   mFile.close();
 
@@ -295,10 +306,15 @@ void mpt_decorr::write_covariance_of_meanpt(){
        output_filename << "_eta" ;
       }
       output_filename << "_" << part ;
+      if(yflag==1){
+      output_filename << "_yref_" << eta_bin_centers[ieta1] ;
+      }
+      else{
       output_filename << "_etaref_" << eta_bin_centers[ieta1] ;
+      }
       output_filename << ".dat";
       mFile.open(output_filename.str().c_str(), std::ios::out );
-      mFile << "eta1  eta2   cov(eta1,eta2)   error   Rpt(eta1,eta2)  error  rpt(eta1,eta2)" << std::endl ;
+      mFile << "eta1    eta2     cov(eta1,eta2)    error    Rpt(eta1,eta2)     error     rpt(eta1,eta2)    error" << std::endl ;
       for(int ieta2=0; ieta2<Neta; ieta2++){
         mFile << eta_bin_centers[ieta1] << "   " << eta_bin_centers[ieta2] << "   " <<  sumMean1[ieta2] << "  "
          << sqrt(sumMeanSq1[ieta2] - sumMean1[ieta2]*sumMean1[ieta2]) << "   " << sumMean2[ieta2] << "  "
