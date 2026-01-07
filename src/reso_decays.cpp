@@ -40,7 +40,7 @@ void reso_decays::perform_decays(events* Event){
 
   for (auto &part_i: temp_part_vect) {
     if(pdg->get_particle_from_pid( part_i.get_pid())->is_stable() > 0)
-      Event->add_particle(&part_i);
+      Event->add_particle(part_i);
     else
       resonance_list.push_back(part_i);
   }
@@ -156,12 +156,12 @@ void reso_decays::perform_decays(events* Event){
       // std::cout << mother_pid << " -> " << daughter_1_pid << " + " << daughter_2_pid << std::endl ;  
       
       if(daughter_1_stability > 0)
-        Event->add_particle(daughter1);
+        Event->add_particle(*daughter1);
       else
 	resonance_list.push_back(*daughter1);
       
       if(daughter_2_stability > 0)
-        Event->add_particle(daughter2);
+        Event->add_particle(*daughter2);
       else
 	resonance_list.push_back(*daughter2);
     } // if two body decay
@@ -203,17 +203,17 @@ void reso_decays::perform_decays(events* Event){
 				daughter_1_mass, daughter_2_mass, daughter_3_mass,daughter_1_pid, 
 				daughter_2_pid,daughter_3_pid, daughter1, daughter2, daughter3) ;
       if(daughter_1_stability > 0)
-        Event->add_particle(daughter1);
+        Event->add_particle(*daughter1);
       else
 	resonance_list.push_back(*daughter1);
       
       if(daughter_2_stability > 0)
-        Event->add_particle(daughter2);
+        Event->add_particle(*daughter2);
       else
 	resonance_list.push_back(*daughter2);
       
       if(daughter_3_stability > 0)
-        Event->add_particle(daughter3);
+        Event->add_particle(*daughter3);
       else
 	resonance_list.push_back(*daughter3);
     } // if 3 body decay

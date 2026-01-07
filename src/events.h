@@ -1,35 +1,35 @@
 #pragma once
-#include <iostream>
-#include "particles.h"
 #include <vector>
+#include "particles.h"
 
-
-class events{
-  public :
+class events {
+public:
     events();
     ~events();
+
     void add_particle(int pid, double t, double x, double y,
-                      double z, double e, double px, double py, 
-                      double pz);
-    void add_particle(int pid, double t, double x, double y, 
-                      double z, double e, double px, double py, double pz, 
+                      double z, double e, double px, double py, double pz);
+
+    void add_particle(int pid, double t, double x, double y,
+                      double z, double e, double px, double py, double pz,
                       bool recon_flag, double weight);
 
-    void add_particle(particles* part) ; 
+    void add_particle(const particles& part);
 
-    particles* get_particle(int xx){
-      return &particle_vector[xx] ; 
+    particles* get_particle(int i) {
+        return &particle_vector[i];   // OK: pointer to internal object
     }
-  
-   inline int get_multiplicity_of_the_event(){
-     return particle_vector.size() ;
-   }
 
-   inline void clear_particle_vector(){
-     particle_vector.clear() ; 
-   }
+    int get_multiplicity_of_the_event() const {
+        return particle_vector.size();
+    }
 
-  private :
-    std::vector<particles> particle_vector ;
+    void clear_particle_vector() {
+        particle_vector.clear();
+    }
 
+private:
+    std::vector<particles> particle_vector;
 };
+
+

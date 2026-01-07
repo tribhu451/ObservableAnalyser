@@ -74,7 +74,7 @@ int main(int argc, char **argv){
   // calculating the observables //
   observables* OBJ = new observables(iparams,RIF);
   //OBJ->calculate_dnchdeta_eta(0.01,3);
-  //OBJ->calculate_dndy_y(0.01,3);
+   OBJ->calculate_dndy_y(0.01,3);
   //OBJ->calculate_invariant_yield_vs_pt(0, -0.5, 0.5);
   //OBJ->calculate_invariant_yield_vs_pt(1, -0.5, 0.5);
   //OBJ->calculate_v1_vs_y_or_eta(0, 0, 0.2, 2 );
@@ -88,11 +88,11 @@ int main(int argc, char **argv){
   //OBJ->calculate_amn_from_smeared_grid(  211,  0,  -0.5,  0.5, 0.1, 2);
   //OBJ->calculate_amn_of_charged_hadrons( 0,  -0.5,  0.5, 0.1, 2);
   //OBJ->calculate_amn_of_charged_hadrons( 0,  -0.5,  0.5, 0.01, 2);
-  OBJ->calculate_amn_vs_rapidity( 211, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( 321, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( -321, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( 2212, 1,  0.2, 2);
-  OBJ->calculate_amn_vs_rapidity( -2212, 1,  0.2, 2);
+  //OBJ->calculate_amn_vs_rapidity( 211, 1,  0.2, 2);
+  //OBJ->calculate_amn_vs_rapidity( 321, 1,  0.2, 2);
+  //OBJ->calculate_amn_vs_rapidity( -321, 1,  0.2, 2);
+  //OBJ->calculate_amn_vs_rapidity( 2212, 1,  0.2, 2);
+  //OBJ->calculate_amn_vs_rapidity( -2212, 1,  0.2, 2);
   return 0;
 }
 
